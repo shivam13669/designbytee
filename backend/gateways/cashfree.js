@@ -9,18 +9,44 @@ const CASHFREE_APP_SECRET = process.env.CASHFREE_APP_SECRET;
 
 /**
  * Generate Cashfree request signature (v2.1)
+ * Signature: HMAC-SHA256(method + path + timestamp + body, secret) in base64
  * @param {string} path
  * @param {string} method
  * @param {string} body
- * @returns {string} SHA256 signature
+ * @param {string} timestamp
+ * @returns {string} Base64 encoded signature
  */
 const generateCashfreeSignature = (path, method, body, timestamp) => {
-  const data = `${method}${path}${timestamp}${body}`;
-  return crypto
+  // Ensure body is a string
+  const bodyStr = typeof body === 'string' ? body : JSON.stringify(body);
+
+  // Create signature data: method + path + timestamp + body
+  const signatureData = `${method}${path}${timestamp}${bodyStr}`;
+
+  logger.info('Signature data being hashed', {
+    method,
+    path,
+    timestamp,
+    bodyLength: bodyStr.length,
+  });
+
+  const signature = crypto
     .createHmac('sha256', CASHFREE_APP_SECRET)
-    .update(data)
+    .update(signatureData)
     .digest('base64');
+
+  return signature;
 };
+
+/**
+ * Validate Cashfree configuration
+ */
+if (!CASHFREE_APP_ID || !CASHFREE_APP_SECRET) {
+  logger.warn('Cashfree credentials not configured', {
+    hasAppId: !!CASHFREE_APP_ID,
+    hasAppSecret: !!CASHFREE_APP_SECRET,
+  });
+}
 
 /**
  * Create axios instance for Cashfree API
@@ -30,7 +56,6 @@ const cashfreeAPI = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'x-api-version': '2023-08-01',
-    'x-client-id': CASHFREE_APP_ID,
   },
 });
 
@@ -75,13 +100,22 @@ export const createCashfreeOrder = async (params) => {
     const body = JSON.stringify(orderData);
     const signature = generateCashfreeSignature(path, 'POST', body, timestamp);
 
+    logger.info('Cashfree request details', {
+      orderId: orderIdUnique,
+      appId: CASHFREE_APP_ID,
+      hasSecret: !!CASHFREE_APP_SECRET,
+      timestamp,
+      signatureLength: signature.length,
+    });
+
     const response = await cashfreeAPI.post('/orders', orderData, {
       headers: {
-        'x-idempotency-key': `${Date.now()}`,
+        'x-client-id': CASHFREE_APP_ID,
         'x-api-key': CASHFREE_APP_SECRET,
         'x-request-id': `${Date.now()}`,
         'x-timestamp': timestamp,
-        'x-signature': `${signature}`,
+        'x-signature': signature,
+        'x-idempotency-key': `${Date.now()}`,
       },
     });
 
@@ -124,18 +158,29 @@ export const createCashfreeOrder = async (params) => {
     const errorDetails = {
       message: error.message,
       status: error.response?.status,
+      statusText: error.response?.statusText,
       data: error.response?.data,
       headers: error.response?.headers,
-      config: {
+      requestConfig: {
         url: error.config?.url,
         method: error.config?.method,
-        headers: error.config?.headers,
+        baseURL: error.config?.baseURL,
+        headersKeys: error.config?.headers ? Object.keys(error.config.headers) : [],
       }
     };
-    logger.error('Cashfree order creation failed', JSON.stringify(errorDetails, null, 2));
+
+    logger.error('Cashfree order creation failed', {
+      statusCode: error.response?.status,
+      errorMessage: error.response?.data?.message,
+      errorType: error.response?.data?.type,
+      fullError: JSON.stringify(errorDetails, null, 2),
+    });
+
     throw {
       message: 'Failed to create Cashfree order',
       error: error.message,
+      apiError: error.response?.data?.message,
+      status: error.response?.status,
       details: errorDetails,
     };
   }
