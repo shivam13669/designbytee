@@ -9,7 +9,8 @@ const CASHFREE_APP_SECRET = process.env.CASHFREE_APP_SECRET;
 
 /**
  * Generate Cashfree request signature (v2.1)
- * Signature: HMAC-SHA256(method + path + timestamp + body, secret) in base64
+ * Signature: HMAC-SHA256(method + path + timestamp + body, secret)
+ * Try base64 encoding (as per Cashfree API docs)
  * @param {string} path
  * @param {string} method
  * @param {string} body
@@ -23,19 +24,34 @@ const generateCashfreeSignature = (path, method, body, timestamp) => {
   // Create signature data: method + path + timestamp + body
   const signatureData = `${method}${path}${timestamp}${bodyStr}`;
 
-  logger.info('Signature data being hashed', {
+  logger.info('Signature data for Cashfree', {
     method,
     path,
     timestamp,
     bodyLength: bodyStr.length,
+    signatureDataLength: signatureData.length,
+    signatureDataPreview: signatureData.substring(0, 50) + '...',
   });
 
-  const signature = crypto
-    .createHmac('sha256', CASHFREE_APP_SECRET)
-    .update(signatureData)
-    .digest('base64');
+  try {
+    // Use HMAC-SHA256 with base64 encoding
+    const signature = crypto
+      .createHmac('sha256', CASHFREE_APP_SECRET)
+      .update(signatureData)
+      .digest('base64');
 
-  return signature;
+    logger.info('Signature generated', {
+      signatureLength: signature.length,
+      signaturePreview: signature.substring(0, 20) + '...',
+    });
+
+    return signature;
+  } catch (error) {
+    logger.error('Error generating signature', {
+      error: error.message,
+    });
+    throw error;
+  }
 };
 
 /**
@@ -97,8 +113,10 @@ export const createCashfreeOrder = async (params) => {
     // Create signature for request
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const path = '/orders';
-    const body = JSON.stringify(orderData);
-    const signature = generateCashfreeSignature(path, 'POST', body, timestamp);
+
+    // Create body string with no extra spaces (compact JSON)
+    const bodyString = JSON.stringify(orderData);
+    const signature = generateCashfreeSignature(path, 'POST', bodyString, timestamp);
 
     logger.info('Cashfree request details', {
       orderId: orderIdUnique,
@@ -106,9 +124,14 @@ export const createCashfreeOrder = async (params) => {
       hasSecret: !!CASHFREE_APP_SECRET,
       timestamp,
       signatureLength: signature.length,
+      bodyLength: bodyString.length,
     });
 
-    const response = await cashfreeAPI.post('/orders', orderData, {
+    // Make request with raw string body to ensure signature matches
+    const response = await cashfreeAPI({
+      method: 'POST',
+      url: '/orders',
+      data: bodyString,
       headers: {
         'x-client-id': CASHFREE_APP_ID,
         'x-api-key': CASHFREE_APP_SECRET,
@@ -116,6 +139,7 @@ export const createCashfreeOrder = async (params) => {
         'x-timestamp': timestamp,
         'x-signature': signature,
         'x-idempotency-key': `${Date.now()}`,
+        'Content-Type': 'application/json',
       },
     });
 
@@ -188,16 +212,25 @@ export const createCashfreeOrder = async (params) => {
 
 /**
  * Get Cashfree order details
- * @param {string} orderId 
+ * @param {string} orderId
  * @returns {Promise<object>} Order details
  */
 export const getCashfreeOrderDetails = async (orderId) => {
   try {
     logger.info('Fetching Cashfree order details', { orderId });
 
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const path = `/orders/${orderId}`;
+    const bodyString = '';
+    const signature = generateCashfreeSignature(path, 'GET', bodyString, timestamp);
+
     const response = await cashfreeAPI.get(`/orders/${orderId}`, {
       headers: {
+        'x-client-id': CASHFREE_APP_ID,
         'x-api-key': CASHFREE_APP_SECRET,
+        'x-timestamp': timestamp,
+        'x-signature': signature,
+        'x-request-id': `${Date.now()}`,
       },
     });
 
@@ -305,11 +338,20 @@ export const getCashfreePaymentDetails = async (orderId, paymentId) => {
   try {
     logger.info('Fetching Cashfree payment details', { orderId, paymentId });
 
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const path = `/orders/${orderId}/payments/${paymentId}`;
+    const bodyString = '';
+    const signature = generateCashfreeSignature(path, 'GET', bodyString, timestamp);
+
     const response = await cashfreeAPI.get(
       `/orders/${orderId}/payments/${paymentId}`,
       {
         headers: {
+          'x-client-id': CASHFREE_APP_ID,
           'x-api-key': CASHFREE_APP_SECRET,
+          'x-timestamp': timestamp,
+          'x-signature': signature,
+          'x-request-id': `${Date.now()}`,
         },
       }
     );
@@ -347,16 +389,25 @@ export const refundCashfreePayment = async (params) => {
       refund_note: 'Course refund',
     };
 
-    const response = await cashfreeAPI.post(
-      `/orders/${orderId}/payments/${paymentId}/refunds`,
-      refundData,
-      {
-        headers: {
-          'x-api-key': CASHFREE_APP_SECRET,
-          'x-idempotency-key': `${Date.now()}`,
-        },
-      }
-    );
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const path = `/orders/${orderId}/payments/${paymentId}/refunds`;
+    const bodyString = JSON.stringify(refundData);
+    const signature = generateCashfreeSignature(path, 'POST', bodyString, timestamp);
+
+    const response = await cashfreeAPI({
+      method: 'POST',
+      url: path,
+      data: bodyString,
+      headers: {
+        'x-client-id': CASHFREE_APP_ID,
+        'x-api-key': CASHFREE_APP_SECRET,
+        'x-timestamp': timestamp,
+        'x-signature': signature,
+        'x-request-id': `${Date.now()}`,
+        'x-idempotency-key': `${Date.now()}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
     logger.info('Cashfree refund initiated', {
       refundId: response.data?.refund_id,
