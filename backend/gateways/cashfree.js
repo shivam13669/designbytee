@@ -8,12 +8,18 @@ const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID;
 const CASHFREE_APP_SECRET = process.env.CASHFREE_APP_SECRET;
 
 /**
- * Generate Cashfree request signature
- * @param {string} data 
+ * Generate Cashfree request signature (v2.1)
+ * @param {string} path
+ * @param {string} method
+ * @param {string} body
  * @returns {string} SHA256 signature
  */
-const generateCashfreeSignature = (data) => {
-  return crypto.createHash('sha256').update(data).digest('hex');
+const generateCashfreeSignature = (path, method, body, timestamp) => {
+  const data = `${method}${path}${timestamp}${body}`;
+  return crypto
+    .createHmac('sha256', CASHFREE_APP_SECRET)
+    .update(data)
+    .digest('base64');
 };
 
 /**
@@ -37,7 +43,7 @@ export const createCashfreeOrder = async (params) => {
   try {
     const { amount, currency = 'INR', customer, orderId } = params;
 
-    const orderIdUnique = `ORD_${CASHFREE_APP_ID}_${Date.now()}`;
+    const orderIdUnique = `ORD_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     logger.info('Creating Cashfree order', {
       amount,
@@ -63,14 +69,19 @@ export const createCashfreeOrder = async (params) => {
       order_tags: ['course', 'payment'],
     };
 
-    // Create signature
-    const signatureData = orderIdUnique + parseFloat(amount) + currency + CASHFREE_APP_SECRET;
-    const signature = generateCashfreeSignature(signatureData);
+    // Create signature for request
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const path = '/orders';
+    const body = JSON.stringify(orderData);
+    const signature = generateCashfreeSignature(path, 'POST', body, timestamp);
 
     const response = await cashfreeAPI.post('/orders', orderData, {
       headers: {
         'x-idempotency-key': `${Date.now()}`,
         'x-api-key': CASHFREE_APP_SECRET,
+        'x-request-id': `${Date.now()}`,
+        'x-timestamp': timestamp,
+        'x-signature': `${signature}`,
       },
     });
 
@@ -79,10 +90,32 @@ export const createCashfreeOrder = async (params) => {
       paymentSessionId: response.data?.payment_session_id,
     });
 
+    // Extract payment link from response
+    let paymentLink = null;
+
+    // Try multiple methods to get payment link
+    if (response.data?.payment_link) {
+      paymentLink = response.data.payment_link;
+    } else if (response.data?.payment_session_id) {
+      // Session-based payment - construct URL
+      paymentLink = `https://api.cashfree.com/pg/orders/${orderIdUnique}/pay/${response.data.payment_session_id}`;
+    } else if (response.data?.payments && Array.isArray(response.data.payments)) {
+      // Find payment link in payments array
+      const payment = response.data.payments.find(p => p.url);
+      paymentLink = payment?.url;
+    }
+
+    if (!paymentLink) {
+      logger.warn('No payment link found in Cashfree response', {
+        orderId: orderIdUnique,
+        responseKeys: Object.keys(response.data || {}),
+      });
+    }
+
     return {
       orderId: response.data?.order_id,
       paymentSessionId: response.data?.payment_session_id,
-      paymentLink: response.data?.payments?.find(p => p.url)?.url,
+      paymentLink,
       status: response.data?.order_status,
       amount: response.data?.order_amount,
       currency: response.data?.order_currency,
@@ -147,29 +180,17 @@ export const getCashfreeOrderDetails = async (orderId) => {
 };
 
 /**
- * Verify Cashfree webhook signature
- * @param {object} webhookData 
- * @param {string} signature 
+ * Verify Cashfree webhook signature (v2.1)
+ * @param {string} body
+ * @param {string} timestamp
+ * @param {string} signature
  * @returns {boolean} True if signature is valid
  */
-const verifyCashfreeWebhookSignature = (webhookData, signature) => {
+const verifyCashfreeWebhookSignature = (body, timestamp, signature) => {
   try {
-    const { data } = webhookData;
-    
-    if (!data) {
-      logger.warn('No data in webhook');
-      return false;
-    }
-
-    // Cashfree signature verification
-    // signature = SHA256(orderId + orderAmount + orderCurrency + appSecret)
-    const signatureData = 
-      `${data.order?.order_id || ''}` +
-      `${data.order?.order_amount || ''}` +
-      `${data.order?.order_currency || ''}` +
-      CASHFREE_APP_SECRET;
-
-    const expectedSignature = generateCashfreeSignature(signatureData);
+    // Webhook signature format: HMAC-SHA256(method + path + timestamp + body, appSecret)
+    const path = '/webhook';
+    const expectedSignature = generateCashfreeSignature(path, 'POST', body, timestamp);
     const isValid = expectedSignature === signature;
 
     if (!isValid) {
@@ -186,19 +207,23 @@ const verifyCashfreeWebhookSignature = (webhookData, signature) => {
 };
 
 /**
- * Handle Cashfree webhook
- * @param {object} webhookData 
- * @param {string} signature 
+ * Handle Cashfree webhook (v2.1)
+ * @param {string} body - Raw request body
+ * @param {string} timestamp - x-timestamp header
+ * @param {string} signature - x-signature header
  * @returns {Promise<object>} Validation result
  */
-export const handleCashfreeWebhook = async (webhookData, signature) => {
+export const handleCashfreeWebhook = async (body, timestamp, signature) => {
   try {
+    const webhookData = typeof body === 'string' ? JSON.parse(body) : body;
+
     logger.info('Handling Cashfree webhook', {
       orderId: webhookData?.data?.order?.order_id,
     });
 
     // Verify signature
-    const isValidSignature = verifyCashfreeWebhookSignature(webhookData, signature);
+    const bodyString = typeof body === 'string' ? body : JSON.stringify(body);
+    const isValidSignature = verifyCashfreeWebhookSignature(bodyString, timestamp, signature);
 
     if (!isValidSignature) {
       return { valid: false, message: 'Invalid signature' };

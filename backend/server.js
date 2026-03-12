@@ -43,6 +43,22 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Middleware to capture raw body for webhook signature verification
+app.use((req, res, next) => {
+  if (req.path.includes('/webhook')) {
+    let rawBody = '';
+    req.on('data', (chunk) => {
+      rawBody += chunk.toString();
+    });
+    req.on('end', () => {
+      req.rawBody = rawBody;
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
@@ -72,6 +88,22 @@ app.get('/health/razorpay', (req, res) => {
     razorpay_configured: hasKeyId && hasKeySecret,
     razorpay_key_id: hasKeyId ? 'SET' : 'MISSING',
     razorpay_key_secret: hasKeySecret ? 'SET' : 'MISSING',
+    frontend_url: process.env.FRONTEND_URL || 'NOT SET',
+    environment: NODE_ENV,
+  });
+});
+
+// Diagnostic endpoint to check Cashfree setup
+app.get('/health/cashfree', (req, res) => {
+  const hasAppId = !!process.env.CASHFREE_APP_ID;
+  const hasAppSecret = !!process.env.CASHFREE_APP_SECRET;
+  const apiUrl = process.env.CASHFREE_API_URL || 'https://api.cashfree.com/pg';
+
+  res.status(200).json({
+    cashfree_configured: hasAppId && hasAppSecret,
+    cashfree_app_id: hasAppId ? 'SET' : 'MISSING',
+    cashfree_app_secret: hasAppSecret ? 'SET' : 'MISSING',
+    cashfree_api_url: apiUrl,
     frontend_url: process.env.FRONTEND_URL || 'NOT SET',
     environment: NODE_ENV,
   });

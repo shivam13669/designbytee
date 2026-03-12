@@ -73,25 +73,37 @@ router.post('/phonepe', async (req, res) => {
 
 /**
  * POST /api/webhook/cashfree
- * Webhook endpoint for Cashfree payment notifications
- * 
- * Cashfree sends X-WEBHOOK-SIGNATURE header
+ * Webhook endpoint for Cashfree payment notifications (v2.1 API)
+ *
+ * Cashfree v2.1 sends X-WEBHOOK-SIGNATURE and X-WEBHOOK-TIMESTAMP headers
  * Events: PAYMENT_SUCCESS, PAYMENT_FAILED, PAYMENT_USER_DROPPED, REFUND_FORWARD, etc.
  */
 router.post('/cashfree', async (req, res) => {
   try {
     const webhookData = req.body;
     const signature = req.headers['x-webhook-signature'];
+    const timestamp = req.headers['x-webhook-timestamp'];
 
-    logger.info('Received Cashfree webhook', { type: webhookData.type });
+    logger.info('Received Cashfree webhook', {
+      type: webhookData.type,
+      timestamp
+    });
 
     if (!signature) {
       logger.warn('Missing Cashfree webhook signature');
       return res.status(400).json({ error: 'Missing signature' });
     }
 
+    if (!timestamp) {
+      logger.warn('Missing Cashfree webhook timestamp');
+      return res.status(400).json({ error: 'Missing timestamp' });
+    }
+
+    // Use raw body for signature verification if available, otherwise stringify parsed body
+    const rawBody = req.rawBody || JSON.stringify(webhookData);
+
     // Handle webhook
-    const result = await cashfree.handleCashfreeWebhook(webhookData, signature);
+    const result = await cashfree.handleCashfreeWebhook(rawBody, timestamp, signature);
 
     if (!result.valid) {
       return res.status(400).json({ error: result.message });
