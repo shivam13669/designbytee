@@ -41,7 +41,7 @@ export const createCashfreeOrder = async (params) => {
       },
 
       order_meta: {
-        return_url: `${process.env.FRONTEND_URL}/payment-status?orderId=${orderId}`,
+        return_url: `${process.env.FRONTEND_URL}/courses/index.html`,
       },
     };
 
