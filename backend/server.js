@@ -109,6 +109,28 @@ app.get('/health/cashfree', (req, res) => {
   });
 });
 
+// Detailed Cashfree credentials debug endpoint
+app.get('/debug/cashfree', (req, res) => {
+  const appId = process.env.CASHFREE_APP_ID || '';
+  const appSecret = process.env.CASHFREE_APP_SECRET || '';
+  const apiUrl = process.env.CASHFREE_API_URL || 'https://api.cashfree.com/pg';
+
+  res.status(200).json({
+    credentials: {
+      app_id_length: appId.length,
+      app_id_first_10: appId.substring(0, 10),
+      app_id_last_5: appId.substring(Math.max(0, appId.length - 5)),
+      app_secret_length: appSecret.length,
+      app_secret_first_10: appSecret.substring(0, 10),
+      app_secret_last_5: appSecret.substring(Math.max(0, appSecret.length - 5)),
+      app_secret_has_special_chars: /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(appSecret),
+    },
+    api_url: apiUrl,
+    environment: NODE_ENV,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Payment routes
 app.use('/api/payment', paymentRoutes);
 

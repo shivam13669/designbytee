@@ -59,8 +59,16 @@ const generateCashfreeSignature = (path, method, body, timestamp) => {
 /**
  * Validate Cashfree configuration
  */
+logger.info('Cashfree Gateway Initialization', {
+  appIdPresent: !!CASHFREE_APP_ID,
+  appIdLength: CASHFREE_APP_ID?.length || 0,
+  appSecretPresent: !!CASHFREE_APP_SECRET,
+  appSecretLength: CASHFREE_APP_SECRET?.length || 0,
+  apiUrl: CASHFREE_API_URL,
+});
+
 if (!CASHFREE_APP_ID || !CASHFREE_APP_SECRET) {
-  logger.warn('Cashfree credentials not configured', {
+  logger.warn('Cashfree credentials not fully configured', {
     hasAppId: !!CASHFREE_APP_ID,
     hasAppSecret: !!CASHFREE_APP_SECRET,
   });
