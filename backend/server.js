@@ -1,154 +1,93 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 
-// Initialize dotenv for environment variables
 dotenv.config();
 
-// Get current directory (for ES modules)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Set environment defaults
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const FRONTEND_URL = process.env.FRONTEND_URL;
-
-// Warn if FRONTEND_URL is not configured
-if (!FRONTEND_URL) {
-  console.warn(
-    '[WARNING] FRONTEND_URL environment variable is not set. CORS will default to http://localhost:3000'
-  );
-}
-
-// Import routes
-import paymentRoutes from './routes/payment.js';
-import webhookRoutes from './routes/webhooks.js';
-
-// Initialize Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ==================== MIDDLEWARE ====================
+const FRONTEND_URL =
+  process.env.FRONTEND_URL || "http://localhost:3000";
 
-// CORS Configuration - Allow only frontend domain in production
-const corsOptions = {
-  origin: FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-  optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
 
-app.use(cors(corsOptions));
+// ================= CORS =================
 
-// Body parser middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+  })
+);
 
-// Request logging middleware
+
+// ================= BODY =================
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+// ================= LOGGER =================
+
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log(
+    `[${new Date().toISOString()}] ${req.method} ${req.url}`
+  );
   next();
 });
 
-// ==================== ROUTES ====================
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    message: 'Payment Gateway Backend is running',
+// ================= ROUTES =================
+
+import paymentRoutes from "./routes/payment.js";
+import webhookRoutes from "./routes/webhooks.js";
+
+app.use("/api/payment", paymentRoutes);
+app.use("/api/webhook", webhookRoutes);
+
+
+// ================= HEALTH =================
+
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
   });
 });
 
-// Diagnostic endpoint to check Razorpay setup
-app.get('/health/razorpay', (req, res) => {
-  const hasKeyId = !!process.env.RAZORPAY_KEY_ID;
-  const hasKeySecret = !!process.env.RAZORPAY_KEY_SECRET;
 
-  res.status(200).json({
-    razorpay_configured: hasKeyId && hasKeySecret,
-    razorpay_key_id: hasKeyId ? 'SET' : 'MISSING',
-    razorpay_key_secret: hasKeySecret ? 'SET' : 'MISSING',
-    frontend_url: process.env.FRONTEND_URL || 'NOT SET',
-    environment: NODE_ENV,
+app.get("/health/cashfree", (req, res) => {
+  res.json({
+    appId: process.env.CASHFREE_APP_ID ? "SET" : "MISSING",
+    secret: process.env.CASHFREE_APP_SECRET ? "SET" : "MISSING",
+    url:
+      process.env.CASHFREE_API_URL ||
+      "https://api.cashfree.com/pg",
   });
 });
 
-// Diagnostic endpoint to check Cashfree setup
-app.get('/health/cashfree', (req, res) => {
-  const hasAppId = !!process.env.CASHFREE_APP_ID;
-  const hasAppSecret = !!process.env.CASHFREE_APP_SECRET;
-  const apiUrl = process.env.CASHFREE_API_URL || 'https://api.cashfree.com/pg';
 
-  res.status(200).json({
-    cashfree_configured: hasAppId && hasAppSecret,
-    cashfree_app_id: hasAppId ? 'SET' : 'MISSING',
-    cashfree_app_secret: hasAppSecret ? 'SET' : 'MISSING',
-    cashfree_api_url: apiUrl,
-    frontend_url: process.env.FRONTEND_URL || 'NOT SET',
-    environment: NODE_ENV,
-  });
-});
+// ================= 404 =================
 
-// Detailed Cashfree credentials debug endpoint
-app.get('/debug/cashfree', (req, res) => {
-  const appId = process.env.CASHFREE_APP_ID || '';
-  const appSecret = process.env.CASHFREE_APP_SECRET || '';
-  const apiUrl = process.env.CASHFREE_API_URL || 'https://api.cashfree.com/pg';
-
-  res.status(200).json({
-    credentials: {
-      app_id_length: appId.length,
-      app_id_first_10: appId.substring(0, 10),
-      app_id_last_5: appId.substring(Math.max(0, appId.length - 5)),
-      app_secret_length: appSecret.length,
-      app_secret_first_10: appSecret.substring(0, 10),
-      app_secret_last_5: appSecret.substring(Math.max(0, appSecret.length - 5)),
-      app_secret_has_special_chars: /[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(appSecret),
-    },
-    api_url: apiUrl,
-    environment: NODE_ENV,
-    timestamp: new Date().toISOString(),
-  });
-});
-
-// Payment routes
-app.use('/api/payment', paymentRoutes);
-
-// Webhook routes
-app.use('/api/webhook', webhookRoutes);
-
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
-    error: 'Not Found',
-    message: `Endpoint ${req.method} ${req.path} does not exist`,
+    error: "Not found",
   });
 });
 
-// Error handling middleware
+
+// ================= ERROR =================
+
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({
-    error: err.message || 'Internal Server Error',
-    ...(NODE_ENV === 'development' && { stack: err.stack }),
+  console.log(err);
+
+  res.status(500).json({
+    error: err.message,
   });
 });
 
-// ==================== START SERVER ====================
+
+// ================= START =================
 
 app.listen(PORT, () => {
-  console.log(`
-╔════════════════════════════════════════════════╗
-║   Payment Gateway Backend Server Running       ║
-║   Port: ${PORT}                                    ║
-║   Environment: ${NODE_ENV}                         ║
-║   Frontend URL: ${FRONTEND_URL || 'Not configured'} ║
-╚════════════════════════════════════════════════╝
-  `);
+  console.log("Server running on", PORT);
 });
-
-export default app;
