@@ -43,22 +43,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Middleware to capture raw body for webhook signature verification
-app.use((req, res, next) => {
-  if (req.path.includes('/webhook')) {
-    let rawBody = '';
-    req.on('data', (chunk) => {
-      rawBody += chunk.toString();
-    });
-    req.on('end', () => {
-      req.rawBody = rawBody;
-      next();
-    });
-  } else {
-    next();
-  }
-});
-
 // Body parser middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));

@@ -73,37 +73,27 @@ router.post('/phonepe', async (req, res) => {
 
 /**
  * POST /api/webhook/cashfree
- * Webhook endpoint for Cashfree payment notifications (v2.1 API)
+ * Webhook endpoint for Cashfree payment notifications (2025-01-01 API)
  *
- * Cashfree v2.1 sends X-WEBHOOK-SIGNATURE and X-WEBHOOK-TIMESTAMP headers
+ * Cashfree sends webhook with payment/order status updates
  * Events: PAYMENT_SUCCESS, PAYMENT_FAILED, PAYMENT_USER_DROPPED, REFUND_FORWARD, etc.
  */
 router.post('/cashfree', async (req, res) => {
   try {
     const webhookData = req.body;
-    const signature = req.headers['x-webhook-signature'];
-    const timestamp = req.headers['x-webhook-timestamp'];
 
     logger.info('Received Cashfree webhook', {
-      type: webhookData.type,
-      timestamp
+      type: webhookData?.type,
+      orderId: webhookData?.data?.order?.order_id,
     });
 
-    if (!signature) {
-      logger.warn('Missing Cashfree webhook signature');
-      return res.status(400).json({ error: 'Missing signature' });
+    if (!webhookData) {
+      logger.warn('Empty Cashfree webhook data');
+      return res.status(400).json({ error: 'Missing webhook data' });
     }
-
-    if (!timestamp) {
-      logger.warn('Missing Cashfree webhook timestamp');
-      return res.status(400).json({ error: 'Missing timestamp' });
-    }
-
-    // Use raw body for signature verification if available, otherwise stringify parsed body
-    const rawBody = req.rawBody || JSON.stringify(webhookData);
 
     // Handle webhook
-    const result = await cashfree.handleCashfreeWebhook(rawBody, timestamp, signature);
+    const result = await cashfree.handleCashfreeWebhook(webhookData);
 
     if (!result.valid) {
       return res.status(400).json({ error: result.message });
@@ -117,8 +107,13 @@ router.post('/cashfree', async (req, res) => {
     //   await enrollUserInCourse(userId);
     // }
 
-    logger.info('Cashfree webhook processed', result);
+    logger.info('Cashfree webhook processed successfully', {
+      orderId: result.orderId,
+      type: result.type,
+      paymentStatus: result.paymentStatus,
+    });
 
+    // Always return 200 to acknowledge receipt
     res.status(200).json({
       success: true,
       message: 'Webhook received',
@@ -126,6 +121,7 @@ router.post('/cashfree', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error processing Cashfree webhook', { error: error.message });
+    // Return 200 even on error to prevent Cashfree from retrying too much
     res.status(200).json({
       success: false,
       error: error.message,
