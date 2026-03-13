@@ -396,15 +396,29 @@ function handlePhonePePayment(order) {
 }
 
 function handleCashfreePayment(order) {
-  if (order.paymentLink) {
-    // Store order ID for later verification
+
+  if (order.paymentSessionId) {
+
     localStorage.setItem('cashfree_order_id', order.orderId);
     localStorage.setItem('payment_gateway', 'cashfree');
 
-    // Redirect to Cashfree - backend will handle return_url callback
-    window.location.href = order.paymentLink;
+    const cashfree = Cashfree({
+      mode: "production",
+    });
+
+    cashfree.checkout({
+      paymentSessionId: order.paymentSessionId,
+      redirectTarget: "_self",
+    });
+
   } else {
-    showPaymentStatus('error', 'Payment Gateway Error', 'Failed to initialize Cashfree payment. Please try again.');
+
+    showPaymentStatus(
+      'error',
+      'Payment Gateway Error',
+      'Failed to initialize Cashfree payment. Please try again.'
+    );
+
   }
 }
 
