@@ -70,11 +70,17 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Make API request with authentication headers
-    const response = {
-        data: {
-            redirectUrl: SABPAISA_URL
-        }
-    };
+    const response = await axios.post(
+      SABPAISA_URL,
+        payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
+        },
+      }
+    );
 
     logger.info('SabPaisa order created successfully', {
       transactionId,
