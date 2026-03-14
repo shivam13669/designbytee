@@ -95,9 +95,8 @@ export const createSabPaisaOrder = async (params) => {
       transactionId: transactionId,
       amount: amount,
       currency: currency,
-      status: response.data?.status || 'created',
-      redirectUrl: response.data?.redirectUrl || response.data?.paymentUrl,
-      sessionId: response.data?.sessionId,
+      status: "created",
+      redirectUrl: SABPAISA_URL,
       payload: payload,
       createdAt: new Date().toISOString(),
     };
