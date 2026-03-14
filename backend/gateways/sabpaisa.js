@@ -70,7 +70,7 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Make API request with authentication headers
-    const params = new URLSearchParams(payload);
+    
     const response = await axios.post(
       SABPAISA_URL,
         params,
