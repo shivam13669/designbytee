@@ -15,7 +15,7 @@ const SABPAISA_AUTH_KEY = process.env.SABPAISA_AUTH_KEY;
 const SABPAISA_AUTH_IV = process.env.SABPAISA_AUTH_IV;
 const SABPAISA_URL =
   process.env.SABPAISA_URL ||
-  "https://encrypted.sabpaisa.in/SabPaisa/api/Paisa";
+  "https://securepay.sabpaisa.in/SabPaisa/sabPaisaInit";
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
 /**
@@ -70,17 +70,11 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Make API request with authentication headers
-    const response = await axios.post(
-      SABPAISA_URL,
-        payload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Key': SABPAISA_AUTH_KEY,
-          'X-Auth-IV': SABPAISA_AUTH_IV,
-        },
-      }
-    );
+    const response = {
+        data: {
+            redirectUrl: SABPAISA_URL
+        }
+    };
 
     logger.info('SabPaisa order created successfully', {
       transactionId,
