@@ -71,8 +71,8 @@ export const createSabPaisaOrder = async (params) => {
 
     // Make API request with authentication headers
     const response = await axios.post(
-      `${SABPAISA_URL}/InitiateTransaction`,
-      payload,
+      SABPAISA_URL,
+        payload,
       {
         headers: {
           'Content-Type': 'application/json',
