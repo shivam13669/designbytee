@@ -271,7 +271,7 @@ router.post('/verify-payment', async (req, res) => {
           });
         }
 
-        const sabpaisaStatus = await sabpaisa.getSabPaisaPaymentStatus(orderId);
+        const sabpaisaStatus = await sabpaisa.getSabPaisaPaymentStatus(transactionId || orderId);
 
         if (!sabpaisaStatus.success) {
           return res.status(400).json({

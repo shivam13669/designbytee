@@ -13,7 +13,9 @@ const SABPAISA_USERNAME = process.env.SABPAISA_USERNAME;
 const SABPAISA_PASSWORD = process.env.SABPAISA_PASSWORD;
 const SABPAISA_AUTH_KEY = process.env.SABPAISA_AUTH_KEY;
 const SABPAISA_AUTH_IV = process.env.SABPAISA_AUTH_IV;
-const SABPAISA_URL = process.env.SABPAISA_URL || 'https://encrypted.sabpaisa.in/SabPaisa/api/Paisa';
+const SABPAISA_URL =
+  process.env.SABPAISA_URL ||
+  "https://encrypted.sabpaisa.in/SabPaisa/api/Paisa";
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
 /**
