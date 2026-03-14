@@ -427,25 +427,37 @@ function handleCashfreePayment(order) {
 
 function handleSabPaisaPayment(order) {
 
-  if (!order.redirectUrl) {
-    showPaymentStatus(
-      'error',
-      'Payment Gateway Error',
-      'SabPaisa redirect URL missing'
-    );
-    return;
-  }
+  const redirectUrl =
+    order.redirectUrl ||
+    "https://securepay.sabpaisa.in/SabPaisa/sabPaisaInit";
 
   localStorage.setItem('sabpaisa_transaction_id', order.transactionId);
   localStorage.setItem('sabpaisa_order_id', order.orderId);
   localStorage.setItem('payment_gateway', 'sabpaisa');
 
-  // If payload exists → POST form submit
   if (order.payload) {
 
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = order.redirectUrl;
+    form.action = redirectUrl;
+
+    Object.keys(order.payload).forEach(key => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = order.payload[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+
+  } else {
+
+    window.location.href = redirectUrl;
+
+  }
+}
 
     Object.keys(order.payload).forEach(key => {
       const input = document.createElement("input");
