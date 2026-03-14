@@ -92,16 +92,14 @@ export const createSabPaisaOrder = async (params) => {
       createdAt: new Date().toISOString(),
     };
   } catch (error) {
-    const errorMessage = error.response?.data?.message || error.message;
-    const errorDetails = {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    };
 
-    logger.error('SabPaisa order creation failed', JSON.stringify(errorDetails, null, 2));
-    throw new Error(`SabPaisa API Error: ${errorMessage} (Status: ${error.response?.status || 'Unknown'})`);
-  }
+  logger.error("SabPaisa order creation failed", error);
+
+  throw new Error(
+    error.message || "SabPaisa order failed"
+  );
+
+}
 };
 
 /**
