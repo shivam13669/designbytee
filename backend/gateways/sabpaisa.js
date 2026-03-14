@@ -70,8 +70,17 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Make API request with authentication headers
-    
-    logger.info("SabPaisa payload ready", payload);
+    const response = await axios.post(
+      SABPAISA_URL,
+        payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
+        },
+      }
+    );
 
     logger.info('SabPaisa order created successfully', {
       transactionId,
@@ -92,14 +101,16 @@ export const createSabPaisaOrder = async (params) => {
       createdAt: new Date().toISOString(),
     };
   } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    const errorDetails = {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    };
 
-  logger.error("SabPaisa order creation failed", error);
-
-  throw new Error(
-    error.message || "SabPaisa order failed"
-  );
-
-}
+    logger.error('SabPaisa order creation failed', JSON.stringify(errorDetails, null, 2));
+    throw new Error(`SabPaisa API Error: ${errorMessage} (Status: ${error.response?.status || 'Unknown'})`);
+  }
 };
 
 /**
