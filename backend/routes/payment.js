@@ -4,6 +4,7 @@ import { validators } from '../utils/validators.js';
 import * as razorpay from '../gateways/razorpay.js';
 import * as phonepe from '../gateways/phonepe.js';
 import * as cashfree from '../gateways/cashfree.js';
+import * as sabpaisa from '../gateways/sabpaisa.js';
 
 const router = express.Router();
 
@@ -91,6 +92,16 @@ router.post('/create-order', async (req, res) => {
           currency: 'INR',
           customer,
           orderId: `order_${Date.now()}`,
+        });
+        break;
+
+      case 'sabpaisa':
+        order = await sabpaisa.createSabPaisaOrder({
+          amount,
+          currency: 'INR',
+          customer,
+          orderId: `order_${Date.now()}`,
+          description,
         });
         break;
 
@@ -253,6 +264,34 @@ router.post('/verify-payment', async (req, res) => {
         };
         break;
 
+      case 'sabpaisa':
+        if (!orderId) {
+          return res.status(400).json({
+            error: 'Missing required field: orderId',
+          });
+        }
+
+        const sabpaisaStatus = await sabpaisa.getSabPaisaPaymentStatus(orderId);
+
+        if (!sabpaisaStatus.success) {
+          return res.status(400).json({
+            success: false,
+            error: 'Payment verification failed',
+            status: sabpaisaStatus.status,
+          });
+        }
+
+        verificationResult = {
+          success: true,
+          gateway: 'sabpaisa',
+          orderId,
+          status: sabpaisaStatus.status,
+          amount: sabpaisaStatus.amount,
+          transactionId: sabpaisaStatus.transactionId,
+          timestamp: new Date().toISOString(),
+        };
+        break;
+
       default:
         return res.status(400).json({ error: 'Unsupported gateway' });
     }
@@ -297,6 +336,10 @@ router.get('/status/:gateway/:id', async (req, res) => {
 
       case 'razorpay':
         status = await razorpay.getRazorpayPaymentDetails(id);
+        break;
+
+      case 'sabpaisa':
+        status = await sabpaisa.getSabPaisaPaymentStatus(id);
         break;
 
       default:

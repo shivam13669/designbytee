@@ -302,6 +302,9 @@ function handleGatewayPayment(gateway, order, amount, customer) {
     case 'cashfree':
       handleCashfreePayment(order);
       break;
+    case 'sabpaisa':
+      handleSabPaisaPayment(order);
+      break;
   }
 }
 
@@ -419,6 +422,21 @@ function handleCashfreePayment(order) {
       'Failed to initialize Cashfree payment. Please try again.'
     );
 
+  }
+}
+
+function handleSabPaisaPayment(order) {
+  if (order.redirectUrl) {
+    // Store transaction ID for later verification
+    localStorage.setItem('sabpaisa_transaction_id', order.transactionId);
+    localStorage.setItem('sabpaisa_amount', localStorage.getItem('current_amount'));
+    localStorage.setItem('sabpaisa_order_id', order.orderId);
+    localStorage.setItem('payment_gateway', 'sabpaisa');
+
+    // Redirect to SabPaisa - backend will handle return_url callback
+    window.location.href = order.redirectUrl;
+  } else {
+    showPaymentStatus('error', 'Payment Gateway Error', 'Failed to initialize SabPaisa payment. Please try again.');
   }
 }
 

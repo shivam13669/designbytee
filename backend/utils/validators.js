@@ -20,16 +20,16 @@ export const validators = {
 
   /**
    * Validate payment gateway
-   * @param {string} gateway 
+   * @param {string} gateway
    * @returns {object} { valid: boolean, error?: string }
    */
   validateGateway: (gateway) => {
-    const validGateways = ['razorpay', 'phonepe', 'cashfree'];
+    const validGateways = ['razorpay', 'phonepe', 'cashfree', 'sabpaisa'];
     if (!gateway) return { valid: false, error: 'Gateway is required' };
     if (!validGateways.includes(gateway.toLowerCase())) {
-      return { 
-        valid: false, 
-        error: `Invalid gateway. Supported: ${validGateways.join(', ')}` 
+      return {
+        valid: false,
+        error: `Invalid gateway. Supported: ${validGateways.join(', ')}`
       };
     }
     return { valid: true };
