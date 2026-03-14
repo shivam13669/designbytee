@@ -89,15 +89,16 @@ export const createSabPaisaOrder = async (params) => {
 
     // Return order data with transaction ID for frontend
     return {
-      orderId: orderId,
-      transactionId: transactionId,
-      amount: amount,
-      currency: currency,
-      status: response.data?.status || 'created',
-      redirectUrl: response.data?.redirectUrl || response.data?.paymentUrl,
-      sessionId: response.data?.sessionId,
-      createdAt: new Date().toISOString(),
-    };
+  orderId: orderId,
+  transactionId: transactionId,
+  amount: amount,
+  currency: currency,
+  status: response.data?.status || 'created',
+  redirectUrl: response.data?.redirectUrl || response.data?.paymentUrl,
+  sessionId: response.data?.sessionId,
+  payload: payload,   // ✅ ADD THIS
+  createdAt: new Date().toISOString(),
+};
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     const errorDetails = {

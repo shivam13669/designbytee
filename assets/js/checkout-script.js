@@ -426,18 +426,45 @@ function handleCashfreePayment(order) {
 }
 
 function handleSabPaisaPayment(order) {
-  if (order.redirectUrl) {
-    // Store transaction ID for later verification
-    localStorage.setItem('sabpaisa_transaction_id', order.transactionId);
-    localStorage.setItem('sabpaisa_amount', localStorage.getItem('current_amount'));
-    localStorage.setItem('sabpaisa_order_id', order.orderId);
-    localStorage.setItem('payment_gateway', 'sabpaisa');
 
-    // Redirect to SabPaisa - backend will handle return_url callback
-    window.location.href = order.redirectUrl;
-  } else {
-    showPaymentStatus('error', 'Payment Gateway Error', 'Failed to initialize SabPaisa payment. Please try again.');
+  if (!order.redirectUrl) {
+    showPaymentStatus(
+      'error',
+      'Payment Gateway Error',
+      'SabPaisa redirect URL missing'
+    );
+    return;
   }
+
+  localStorage.setItem('sabpaisa_transaction_id', order.transactionId);
+  localStorage.setItem('sabpaisa_order_id', order.orderId);
+  localStorage.setItem('payment_gateway', 'sabpaisa');
+
+  // If payload exists → POST form submit
+  if (order.payload) {
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = order.redirectUrl;
+
+    Object.keys(order.payload).forEach(key => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = order.payload[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+
+  } else {
+
+    // fallback redirect
+    window.location.href = order.redirectUrl;
+
+  }
+
 }
 
 // Show payment status modal
