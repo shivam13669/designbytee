@@ -70,12 +70,13 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Make API request with authentication headers
+    const params = new URLSearchParams(payload);
     const response = await axios.post(
       SABPAISA_URL,
-        payload,
+        params,
       {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
           'X-Auth-Key': SABPAISA_AUTH_KEY,
           'X-Auth-IV': SABPAISA_AUTH_IV,
         },
