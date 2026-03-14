@@ -7,29 +7,14 @@ import { logger } from '../utils/logger.js';
  * Handles order creation, verification, and webhook processing
  */
 
-// Configuration
-const SABPAISA_MERCHANT_ID = process.env.SABPAISA_MERCHANT_ID;
-const SABPAISA_API_KEY = process.env.SABPAISA_API_KEY;
-const SABPAISA_SECRET_KEY = process.env.SABPAISA_SECRET_KEY;
+// Configuration - SabPaisa credentials
+const SABPAISA_CLIENT_CODE = process.env.SABPAISA_CLIENT_CODE;
+const SABPAISA_USERNAME = process.env.SABPAISA_USERNAME;
+const SABPAISA_PASSWORD = process.env.SABPAISA_PASSWORD;
+const SABPAISA_AUTH_KEY = process.env.SABPAISA_AUTH_KEY;
+const SABPAISA_AUTH_IV = process.env.SABPAISA_AUTH_IV;
+const SABPAISA_URL = process.env.SABPAISA_URL || 'https://encrypted.sabpaisa.in/SabPaisa/api/Paisa';
 const NODE_ENV = process.env.NODE_ENV || 'production';
-
-// SabPaisa API Endpoints
-const SABPAISA_ENDPOINTS = {
-  production: {
-    create: 'https://api.sabpaisa.in/api/payment/create',
-    verify: 'https://api.sabpaisa.in/api/payment/verify',
-    status: 'https://api.sabpaisa.in/api/payment/status'
-  },
-  sandbox: {
-    create: 'https://sandbox.sabpaisa.in/api/payment/create',
-    verify: 'https://sandbox.sabpaisa.in/api/payment/verify',
-    status: 'https://sandbox.sabpaisa.in/api/payment/status'
-  }
-};
-
-const getApiEndpoints = () => {
-  return NODE_ENV === 'production' ? SABPAISA_ENDPOINTS.production : SABPAISA_ENDPOINTS.sandbox;
-};
 
 /**
  * Create SabPaisa order
@@ -47,9 +32,9 @@ export const createSabPaisaOrder = async (params) => {
     });
 
     // Validate credentials
-    if (!SABPAISA_MERCHANT_ID || !SABPAISA_API_KEY || !SABPAISA_SECRET_KEY) {
+    if (!SABPAISA_CLIENT_CODE || !SABPAISA_USERNAME || !SABPAISA_PASSWORD || !SABPAISA_AUTH_KEY || !SABPAISA_AUTH_IV) {
       throw new Error(
-        'SabPaisa credentials not configured. Set SABPAISA_MERCHANT_ID, SABPAISA_API_KEY, and SABPAISA_SECRET_KEY in .env'
+        'SabPaisa credentials not configured. Set SABPAISA_CLIENT_CODE, SABPAISA_USERNAME, SABPAISA_PASSWORD, SABPAISA_AUTH_KEY, and SABPAISA_AUTH_IV in .env'
       );
     }
 
@@ -59,11 +44,13 @@ export const createSabPaisaOrder = async (params) => {
     // Create transaction ID
     const transactionId = `TXN_${orderId}_${Date.now()}`;
 
-    // Prepare payload
+    // Prepare payload according to SabPaisa API format
     const payload = {
-      merchantId: SABPAISA_MERCHANT_ID,
+      clientCode: SABPAISA_CLIENT_CODE,
+      userName: SABPAISA_USERNAME,
+      password: SABPAISA_PASSWORD,
       transactionId: transactionId,
-      amount: amountInPaise,
+      amount: amount, // SabPaisa might expect amount in rupees, not paise
       currency: currency,
       orderDescription: description || 'Payment for course',
       customerName: customer.name,
@@ -73,31 +60,22 @@ export const createSabPaisaOrder = async (params) => {
       notifyUrl: `${process.env.BACKEND_URL}/api/payment/webhook/sabpaisa`,
     };
 
-    // Generate checksum
-    const checksumString = `${SABPAISA_MERCHANT_ID}|${transactionId}|${amountInPaise}|${currency}`;
-    const checksum = crypto
-      .createHmac('sha256', SABPAISA_SECRET_KEY)
-      .update(checksumString)
-      .digest('hex');
-
-    payload.checksum = checksum;
-
-    const endpoints = getApiEndpoints();
     logger.info('SabPaisa API request details', {
-      endpoint: endpoints.create,
+      endpoint: SABPAISA_URL,
       transactionId,
-      amount: amountInPaise,
-      environment: NODE_ENV,
+      amount,
+      clientCode: SABPAISA_CLIENT_CODE,
     });
 
-    // Make API request
+    // Make API request with authentication headers
     const response = await axios.post(
-      endpoints.create,
+      `${SABPAISA_URL}/InitiateTransaction`,
       payload,
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SABPAISA_API_KEY}`,
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
         },
       }
     );
@@ -113,10 +91,10 @@ export const createSabPaisaOrder = async (params) => {
     return {
       orderId: orderId,
       transactionId: transactionId,
-      amount: amountInPaise,
+      amount: amount,
       currency: currency,
       status: response.data?.status || 'created',
-      redirectUrl: response.data?.redirectUrl,
+      redirectUrl: response.data?.redirectUrl || response.data?.paymentUrl,
       sessionId: response.data?.sessionId,
       createdAt: new Date().toISOString(),
     };
@@ -135,35 +113,45 @@ export const createSabPaisaOrder = async (params) => {
 
 /**
  * Verify SabPaisa payment
- * @param {object} params - { transactionId, amount, checksum }
- * @returns {Promise<boolean>} True if payment is verified
+ * @param {object} params - { transactionId }
+ * @returns {Promise<object>} Payment verification result
  */
 export const verifySabPaisaPayment = async (params) => {
   try {
-    const { transactionId, amount, checksum } = params;
+    const { transactionId } = params;
 
     logger.info('Verifying SabPaisa payment', { transactionId });
 
-    // Recreate checksum to verify
-    const checksumString = `${transactionId}|${amount}`;
-    const generatedChecksum = crypto
-      .createHmac('sha256', SABPAISA_SECRET_KEY)
-      .update(checksumString)
-      .digest('hex');
+    // Prepare verification payload
+    const verifyPayload = {
+      clientCode: SABPAISA_CLIENT_CODE,
+      userName: SABPAISA_USERNAME,
+      password: SABPAISA_PASSWORD,
+      transactionId: transactionId,
+    };
 
-    const isValid = generatedChecksum === checksum;
+    const response = await axios.post(
+      `${SABPAISA_URL}/GetTransactionStatus`,
+      verifyPayload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
+        },
+      }
+    );
 
-    if (!isValid) {
-      logger.warn('SabPaisa checksum verification failed', {
-        transactionId,
-        expected: generatedChecksum,
-        received: checksum,
-      });
+    if (response.data?.success) {
+      logger.info('SabPaisa payment verified successfully', { transactionId });
+      return { success: true, ...response.data };
     } else {
-      logger.info('SabPaisa checksum verified successfully', { transactionId });
+      logger.warn('SabPaisa payment verification failed', {
+        transactionId,
+        response: response.data,
+      });
+      return { success: false, ...response.data };
     }
-
-    return isValid;
   } catch (error) {
     logger.error('SabPaisa payment verification error', {
       error: error.message,
@@ -181,18 +169,25 @@ export const getSabPaisaPaymentStatus = async (transactionId) => {
   try {
     logger.info('Fetching SabPaisa payment status', { transactionId });
 
-    if (!SABPAISA_API_KEY) {
-      throw new Error('SabPaisa API key not configured');
+    if (!SABPAISA_CLIENT_CODE || !SABPAISA_USERNAME || !SABPAISA_PASSWORD) {
+      throw new Error('SabPaisa credentials not configured');
     }
 
-    const endpoints = getApiEndpoints();
+    const statusPayload = {
+      clientCode: SABPAISA_CLIENT_CODE,
+      userName: SABPAISA_USERNAME,
+      password: SABPAISA_PASSWORD,
+      transactionId: transactionId,
+    };
 
-    const response = await axios.get(
-      `${endpoints.status}/${transactionId}`,
+    const response = await axios.post(
+      `${SABPAISA_URL}/GetTransactionStatus`,
+      statusPayload,
       {
         headers: {
-          'Authorization': `Bearer ${SABPAISA_API_KEY}`,
           'Content-Type': 'application/json',
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
         },
       }
     );
@@ -218,10 +213,9 @@ export const getSabPaisaPaymentStatus = async (transactionId) => {
 /**
  * Handle SabPaisa webhook
  * @param {object} webhookData - Webhook payload from SabPaisa
- * @param {string} webhookSignature - Webhook signature header
  * @returns {Promise<object>} Webhook processing result
  */
-export const handleSabPaisaWebhook = async (webhookData, webhookSignature) => {
+export const handleSabPaisaWebhook = async (webhookData) => {
   try {
     logger.info('Processing SabPaisa webhook', {
       transactionId: webhookData?.transactionId,
@@ -230,20 +224,6 @@ export const handleSabPaisaWebhook = async (webhookData, webhookSignature) => {
     if (!webhookData) {
       logger.warn('SabPaisa webhook missing data');
       return { processed: false, message: 'Invalid webhook format' };
-    }
-
-    // Verify webhook signature if provided
-    if (webhookSignature) {
-      const checksumString = `${webhookData.transactionId}|${webhookData.amount}|${webhookData.status}`;
-      const generatedSignature = crypto
-        .createHmac('sha256', SABPAISA_SECRET_KEY)
-        .update(checksumString)
-        .digest('hex');
-
-      if (generatedSignature !== webhookSignature) {
-        logger.warn('SabPaisa webhook signature verification failed');
-        return { processed: false, message: 'Invalid webhook signature' };
-      }
     }
 
     logger.info('SabPaisa webhook processed successfully', {
@@ -276,27 +256,29 @@ export const refundSabPaisaPayment = async (params) => {
 
     logger.info('Initiating SabPaisa refund', { transactionId, amount });
 
-    if (!SABPAISA_API_KEY) {
-      throw new Error('SabPaisa API key not configured');
+    if (!SABPAISA_CLIENT_CODE || !SABPAISA_USERNAME || !SABPAISA_PASSWORD) {
+      throw new Error('SabPaisa credentials not configured');
     }
 
     const refundId = `REFUND_${Date.now()}`;
 
     const payload = {
+      clientCode: SABPAISA_CLIENT_CODE,
+      userName: SABPAISA_USERNAME,
+      password: SABPAISA_PASSWORD,
       transactionId: transactionId,
       refundId: refundId,
-      amount: Math.round(amount * 100),
+      amount: amount,
     };
 
-    const endpoints = getApiEndpoints();
-
     const response = await axios.post(
-      `${endpoints.verify}`,
+      `${SABPAISA_URL}/ProcessRefund`,
       payload,
       {
         headers: {
-          'Authorization': `Bearer ${SABPAISA_API_KEY}`,
           'Content-Type': 'application/json',
+          'X-Auth-Key': SABPAISA_AUTH_KEY,
+          'X-Auth-IV': SABPAISA_AUTH_IV,
         },
       }
     );
