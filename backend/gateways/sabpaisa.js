@@ -71,19 +71,19 @@ export const createSabPaisaOrder = async ({
     const txnId = `TXN_${Date.now()}`;
 
 
-const transDate = new Date().getTime();
+const transDate = new Date().toISOString();
 
 const stringForRequest =
   "payerName=" + customer.name +
   "&payerEmail=" + customer.email +
   "&payerMobile=" + customer.phone +
   "&clientTxnId=" + txnId +
-  "&amount=" + amount +
+  "&amount=" + parseInt(amount) +
   "&clientCode=" + SABPAISA_CLIENT_CODE +
   "&transUserName=" + SABPAISA_USERNAME +
   "&transUserPassword=" + SABPAISA_PASSWORD +
-  "&channelId=W" +
   "&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
+  "&channelId=W" +
   "&mcc=5666" +
   "&transDate=" + transDate;
 
