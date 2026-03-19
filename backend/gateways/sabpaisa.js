@@ -36,7 +36,6 @@ function encryptSabPaisa(text) {
   return encrypted.toUpperCase();
 }
 
-
 /* =====================================================
    CREATE ORDER
 ===================================================== */
