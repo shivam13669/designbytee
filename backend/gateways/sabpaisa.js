@@ -99,11 +99,11 @@ const encData = encryptSabPaisa(stringForRequest);
       redirectUrl: SABPAISA_URL,
 
       payload: {
-  encData: encData,
-  clientCode: SABPAISA_CLIENT_CODE.trim(),
-  channelId: "W",
-  iv: process.env.SABPAISA_AUTH_IV,
-},
+        encData: encData,
+        clientCode: SABPAISA_CLIENT_CODE.trim(),
+        channelId: "W",
+        iv: process.env.SABPAISA_AUTH_IV,
+      },
 
       amount,
       currency,
