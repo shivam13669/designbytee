@@ -23,17 +23,41 @@ const SABPAISA_URL =
    ENCRYPT FUNCTION
 ===================================================== */
 
-function encryptSabPaisa(text) {
+function encryptSabPaisa(plaintext) {
 
-  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64").slice(0,32);
-  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64").slice(0,16);
+  const AES_KEY_BASE64 = process.env.SABPAISA_AUTH_KEY;
+  const HMAC_KEY_BASE64 = process.env.SABPAISA_AUTH_IV;
 
-  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  const IV_SIZE = 12;
+  const TAG_SIZE = 16;
 
-  let encrypted = cipher.update(text, "utf8", "base64");
-  encrypted += cipher.final("base64");
+  const aesKey = Buffer.from(AES_KEY_BASE64, "base64");
+  const hmacKey = Buffer.from(HMAC_KEY_BASE64, "base64");
 
-  return encrypted;
+  const iv = crypto.randomBytes(IV_SIZE);
+
+  const cipher = crypto.createCipheriv(
+    "aes-256-gcm",
+    aesKey,
+    iv,
+    { authTagLength: TAG_SIZE }
+  );
+
+  let encrypted = cipher.update(Buffer.from(plaintext, "utf8"));
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+  const tag = cipher.getAuthTag();
+
+  const encryptedMessage = Buffer.concat([iv, encrypted, tag]);
+
+  const hmac = crypto
+    .createHmac("sha384", hmacKey)
+    .update(encryptedMessage)
+    .digest();
+
+  const finalMessage = Buffer.concat([hmac, encryptedMessage]);
+
+  return finalMessage.toString("hex").toUpperCase();
 }
 
 /* =====================================================
@@ -80,7 +104,7 @@ const stringForRequest =
 "&transUserPassword=" + SABPAISA_PASSWORD +
 "&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
 "&channelId=W" +
-"&mcc=5499" +
+"&mcc=5666" +
 "&transDate=" + transDate;
 
 
@@ -102,7 +126,6 @@ const encData = encryptSabPaisa(stringForRequest);
         encData: encData,
         clientCode: SABPAISA_CLIENT_CODE.trim(),
         channelId: "W",
-        iv: process.env.SABPAISA_AUTH_IV,
       },
 
       amount,
