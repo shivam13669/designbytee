@@ -25,8 +25,8 @@ const SABPAISA_URL =
 
 function encryptSabPaisa(text) {
 
-  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "utf8").slice(0, 32);
-  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "utf8").slice(0, 16);
+  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64");
+  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64");
 
   const cipher = crypto.createCipheriv(
     "aes-256-cbc",
