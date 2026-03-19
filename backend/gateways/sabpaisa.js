@@ -23,25 +23,17 @@ const SABPAISA_URL =
    ENCRYPT FUNCTION
 ===================================================== */
 
-function encrypt(plaintext) {
-  const aesKey = Buffer.from(AES_KEY_BASE64, "base64");
-  const hmacKey = Buffer.from(HMAC_KEY_BASE64, "base64");
+function encryptSabPaisa(text) {
 
-  const iv = crypto.randomBytes(IV_SIZE);
+  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64").slice(0,32);
+  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64").slice(0,16);
 
-  const cipher = crypto.createCipheriv("aes-256-gcm", aesKey, iv, { authTagLength: TAG_SIZE });
-  let encrypted = cipher.update(Buffer.from(plaintext, "utf8"));
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
 
-  const tag = cipher.getAuthTag();
+  let encrypted = cipher.update(text, "utf8", "base64");
+  encrypted += cipher.final("base64");
 
-  const encryptedMessage = Buffer.concat([iv, encrypted, tag]);
-
-  const hmac = crypto.createHmac("sha384", hmacKey).update(encryptedMessage).digest();
-
-  const finalMessage = Buffer.concat([hmac, encryptedMessage]);
-
-  return bufferToHex(finalMessage);
+  return encrypted;
 }
 
 /* =====================================================
@@ -78,29 +70,18 @@ export const createSabPaisaOrder = async ({
 const transDate = new Date().toISOString().slice(0,19).replace("T"," ");
 
 const stringForRequest =
-    "payerName=" +
-    payerName +
-    "&payerEmail=" +
-    payerEmail +
-    "&payerMobile=" +
-    payerMobile +
-    "&clientTxnId=" +
-    clientTxnId +
-    "&amount=" +
-    amount +
-    "&clientCode=" +
-    clientCode +
-    "&transUserName=" +
-    transUserName +
-    "&transUserPassword=" +
-    transUserPassword +
-    "&callbackUrl=" +
-    callbackUrl +
-    "&channelId=" +
-    channelId +
-    "&mcc=" +
-    mcc + 
-    "&transDate=" + transDate;;
+"payerName=" + customer.name +
+"&payerEmail=" + customer.email +
+"&payerMobile=" + customer.phone +
+"&clientTxnId=" + txnId +
+"&amount=" + parseInt(amount) +
+"&clientCode=" + SABPAISA_CLIENT_CODE +
+"&transUserName=" + SABPAISA_USERNAME +
+"&transUserPassword=" + SABPAISA_PASSWORD +
+"&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
+"&channelId=W" +
+"&mcc=5499" +
+"&transDate=" + transDate;
 
 
 console.log("STRING =", stringForRequest);
