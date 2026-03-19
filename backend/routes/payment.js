@@ -376,4 +376,14 @@ router.get('/status/:gateway/:id', async (req, res) => {
   }
 });
 
+router.post("/sabpaisa-callback", (req, res) => {
+
+  console.log("Sabpaisa callback received");
+
+  console.log(req.body);
+
+  res.send("OK");
+
+});
+
 export default router;
