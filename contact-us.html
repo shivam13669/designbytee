@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Shivam Anand, portfolio, Shivam, full stack dev, personal portfolio lifecodes, portfolio design, portfolio website, personal portfolio" />
+    <meta name="description" content="Contact Us - Shivam's Portfolio" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Favicon -->
+    <link id='favicon' rel="shortcut icon" href="https://cdn.builder.io/api/v1/image/assets%2F9fabf925f9b44231819b0bfba8d59dc0%2F6a7b9c70a34745d3a7bf25250d843f35?format=webp&width=800" type="image/x-png">
+    <title>Contact Us | Design Byte</title>
+    <style>
+        .contact-section {
+            background: #e5ecfb;
+            min-height: 100vh;
+            padding: 3rem 9% 2rem 9%;
+            margin-top: 6.5rem;
+        }
+        .contact-wrapper {
+            max-width: 1050px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .contact-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        .contact-header h1 {
+            font-size: 3.5rem;
+            color: #020133;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        .contact-header p {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        .contact-container {
+            background: #fff;
+            border-radius: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2.5rem 2rem;
+        }
+        .contact-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 40%;
+            margin-left: 2rem;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        .info-item i {
+            font-size: 2rem;
+            color: #011aff;
+            margin-top: 0.3rem;
+            flex-shrink: 0;
+        }
+        .info-content h3 {
+            font-size: 1.5rem;
+            color: #020133;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .info-content p {
+            font-size: 1.4rem;
+            color: #333;
+            line-height: 1.6;
+        }
+        .info-content a {
+            color: #011aff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .info-content a:hover {
+            text-decoration: underline;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            width: 45%;
+            margin-right: 3.5rem;
+        }
+        .form-container h3 {
+            font-size: 1.8rem;
+            color: #020133;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        .form-group-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-field {
+            height: 50px;
+            display: flex;
+            position: relative;
+            margin: 1rem;
+            width: 100%;
+        }
+        .form-field i {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            color: rgb(51, 51, 51);
+            font-size: 17px;
+            pointer-events: none;
+            transform: translateY(-50%);
+        }
+        .form-field input,
+        .form-field textarea,
+        .message-area textarea {
+            width: 100%;
+            height: 100%;
+            outline: none;
+            padding: 0 16px 0 48px;
+            font-size: 16px;
+            font-family: "Poppins", sans-serif;
+            border-radius: 5px;
+            border: 1px solid rgb(51, 51, 51);
+            background: #e5ecfb;
+        }
+        .form-field input::placeholder,
+        .form-field textarea::placeholder,
+        .message-area textarea::placeholder {
+            color: rgb(51, 51, 51);
+        }
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .message-area textarea:focus {
+            padding-left: 47px;
+            border: 2px solid rgb(115, 3, 167);
+        }
+        .form-field input:focus ~ i,
+        .form-field textarea:focus ~ i,
+        .message-area textarea:focus ~ i {
+            color: rgb(115, 3, 167);
+        }
+        .message-area {
+            position: relative;
+            margin: 1rem;
+            width: 100%;
+        }
+        .message-area i {
+            position: absolute;
+            top: 25px;
+            left: 15px;
+            color: rgb(51, 51, 51);
+            font-size: 20px;
+            pointer-events: none;
+        }
+        .message-area textarea {
+            min-height: 130px;
+            max-height: 230px;
+            max-width: 100%;
+            min-width: 100%;
+            padding: 12px 20px 0 48px;
+        }
+        .message-area textarea::-webkit-scrollbar {
+            width: 0px;
+        }
+        .form-submit-area {
+            display: flex;
+            float: right;
+            flex-direction: row-reverse;
+            margin: 1rem;
+        }
+        .form-submit {
+            color: #fff;
+            border: none;
+            outline: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 13px 25px;
+            background: #2506ad;
+            box-shadow: 0px 5px 10px rgba(48, 68, 247, 0.6);
+            transition: 0.3s ease;
+            font-family: "Nunito", sans-serif;
+            font-weight: 600;
+        }
+        .form-submit:hover {
+            background: #1a047e;
+        }
+        .form-submit i {
+            position: relative;
+            top: 6px;
+            left: 2px;
+            font-size: 1.5rem;
+            transition: 0.3s;
+            color: #fff;
+        }
+        .form-submit:hover i {
+            left: 8px;
+        }
+        @media (max-width: 900px) {
+            .contact-section {
+                min-height: 70vh;
+                padding: 3rem 2rem 2rem 2rem;
+                margin-top: 6.5rem;
+            }
+            .contact-container {
+                flex-direction: column;
+                padding: 18px 12px;
+            }
+            .contact-info-box {
+                max-width: 100%;
+                margin: 0 0 2rem 0;
+            }
+            .form-container {
+                width: 100%;
+                margin: 0;
+            }
+        }
+        @media (max-width: 450px) {
+            .contact-header h1 {
+                font-size: 2.5rem;
+            }
+            .contact-section {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- navbar starts -->
+<header>
+    <a href="/" class="logo"><i class="fab fa-node-js"></i> Design Byte</a>
+
+    <div id="menu" class="fas fa-bars"></div>
+    <nav class="navbar">
+        <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="about-us.html">About</a></li>
+        <li><a href="/experience">Experience</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/courses">Courses</a></li>
+        <li><a href="/contact-us.html">Contact</a></li>
+        <li><a href="login.html" class="login-link">Login</a></li>
+        </ul>
+    </nav>
+</header>
+<!-- navbar ends -->
+
+<!-- contact section starts -->
+<section class="contact-section">
+    <div class="contact-wrapper">
+        <div class="contact-header">
+            <h1>Get in Touch</h1>
+            <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+
+        <div class="contact-container">
+            <!-- Contact Information -->
+            <div class="contact-info-box">
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="info-content">
+                        <h3>Email</h3>
+                        <p><a href="mailto:shivam19e@gmail.com">shivam19e@gmail.com</a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div class="info-content">
+                        <h3>Phone</h3>
+                        <p><a href="tel:+918709356155">+91 8709356155</a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <div class="info-content">
+                        <h3>Location</h3>
+                        <p>Sohray, Pandaul, Madhubani, Bihar, India - 847234</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="info-content">
+                        <h3>Response Time</h3>
+                        <p>We typically respond within 24 hours on business days.</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fas fa-share-alt"></i>
+                    <div class="info-content">
+                        <h3>Connect on Social Media</h3>
+                        <p>
+                            <a href="https://www.linkedin.com/in/shivam-anand-41b10b34b/" target="_blank" style="margin-right: 1rem;">LinkedIn</a>
+                            <a href="https://github.com/shivam13669/" target="_blank" style="margin-right: 1rem;">GitHub</a>
+                            <a href="https://twitter.com/" target="_blank">Twitter</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="form-container">
+                <h3>Send us a Message</h3>
+                <form id="contact-form">
+                    <div class="form-group-wrapper">
+                        <div class="form-field">
+                            <input type="text" name="name" placeholder="Name" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="form-field">
+                            <input type="email" name="email" placeholder="Email" required>
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="form-field">
+                            <input type="tel" name="phone" placeholder="Phone">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="message-area">
+                            <textarea placeholder="Message" name="message" required></textarea>
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                    </div>
+                    <div class="form-submit-area">
+                        <button type="submit" class="form-submit">Submit <i class="fa fa-paper-plane"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- contact section ends -->
+
+<!-- footer section starts -->
+<section class="footer">
+    <div class="box-container">
+        <div class="box">
+            <h3>Shivam | Tutor & Guide</h3>
+            <p>Helping students master modern web and AI technologies through hands-on learning.<br/> <br/> Keep Rising 🚀. Upgrade your skills with guidance!</p>
+        </div>
+
+        <div class="box">
+            <h3>Quick Links</h3>
+            <a href="/"><i class="fas fa-chevron-circle-right"></i> Home</a>
+            <a href="about-us.html"><i class="fas fa-chevron-circle-right"></i> About Us</a>
+            <a href="cancellation-refunds.html"><i class="fas fa-chevron-circle-right"></i> Cancellation & Refunds</a>
+            <a href="terms-conditions.html"><i class="fas fa-chevron-circle-right"></i> Terms & Conditions</a>
+            <a href="privacy.html"><i class="fas fa-chevron-circle-right"></i> Privacy Policy</a>
+            <a href="contact-us.html"><i class="fas fa-chevron-circle-right"></i> Contact Us</a>
+        </div>
+
+        <div class="box">
+            <h3>Contact Info</h3>
+            <p> <i class="fas fa-phone"></i>+918709356155</p>
+            <p> <i class="fas fa-envelope"></i>shivam19e@gmail.com</p>
+            <p> <i class="fas fa-map-marked-alt"></i>Sohray, Pandaul, Madhubani, Bihar, India - 847234</p>
+            <div class="share">
+                <a href="https://www.linkedin.com/in/shivam-anand-41b10b34b/" class="fab fa-linkedin" aria-label="LinkedIn" target="_blank"></a>
+                <a href="https://github.com/shivam13669/" class="fab fa-github" aria-label="GitHub" target="_blank"></a>
+                <a href="mailto:shivam19e@gmail.com" class="fas fa-envelope" aria-label="Mail" target="_blank"></a>
+                <a class="fab fa-twitter" aria-label="Twitter"></a>
+                <a class="fab fa-telegram-plane" aria-label="Telegram"></a>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="credit">Designed with <i class="fa fa-heart pulse"></i> by <span class="author-name">Shivam</span></h1>
+</section>
+<!-- footer section ends -->
+
+<!-- scroll top btn -->
+<a href="#" aria-label="ScrollTop" class="fas fa-angle-up" id="scroll-top"></a>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./assets/js/script.js"></script>
+
+</body>
+</html>

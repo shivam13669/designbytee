@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Shivam Anand, portfolio, Shivam, full stack dev, personal portfolio lifecodes, portfolio design, portfolio website, personal portfolio" />
+    <meta name="description" content="Login - Shivam's Portfolio" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Favicon -->
+    <link id='favicon' rel="shortcut icon" href="https://cdn.builder.io/api/v1/image/assets%2F9fabf925f9b44231819b0bfba8d59dc0%2F6a7b9c70a34745d3a7bf25250d843f35?format=webp&width=800" type="image/x-png">
+    <title>Login | Design Byte</title>
+    <style>
+        .login-page-section {
+            background: linear-gradient(135deg, #e5ecfb 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            padding: 4rem 5% 4rem 5%;
+            margin-top: 6.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-page-wrapper {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .login-page-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .login-page-header h1 {
+            font-size: 4rem;
+            color: #020133;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #011aff, #020133);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-page-header p {
+            font-size: 1.6rem;
+            color: #666;
+        }
+
+        .login-page-card {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 4rem 3rem;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .login-page-form-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .login-page-form-group label {
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            color: #020133;
+            font-weight: 600;
+            letter-spacing: 0.04rem;
+        }
+
+        .login-page-form-group input {
+            width: 100%;
+            padding: 1.2rem 1.8rem;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 0.8rem;
+            transition: 0.3s;
+            box-sizing: border-box;
+            color: #0e2431;
+        }
+
+        .login-page-form-group input:focus {
+            outline: none;
+            border-color: #011aff;
+            box-shadow: 0 0 0 6px rgba(1, 26, 255, 0.1);
+        }
+
+        .login-page-form-group input::placeholder {
+            color: #999;
+            font-size: 1.3rem;
+        }
+
+        .login-page-error {
+            color: #e74c3c;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            min-height: 2rem;
+            font-weight: 500;
+        }
+
+        .login-page-submit-btn {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #011aff, #0015cc);
+            color: #fff;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 0.04rem;
+        }
+
+        .login-page-submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(1, 26, 255, 0.35);
+        }
+
+        .login-page-submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .login-page-footer-link {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            color: #666;
+        }
+
+        .login-page-footer-link a {
+            color: #011aff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .login-page-footer-link a:hover {
+            color: #0015cc;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .login-page-section {
+                padding: 2rem 1rem;
+                margin-top: 6.5rem;
+            }
+
+            .login-page-wrapper {
+                max-width: 100%;
+            }
+
+            .login-page-card {
+                padding: 2.5rem 2rem;
+            }
+
+            .login-page-header h1 {
+                font-size: 2.8rem;
+            }
+
+            .login-page-header p {
+                font-size: 1.2rem;
+            }
+
+            .login-page-form-group label {
+                font-size: 1.2rem;
+            }
+
+            .login-page-form-group input {
+                padding: 1rem 1.5rem;
+                font-size: 1.2rem;
+            }
+
+            .login-page-submit-btn {
+                padding: 1.2rem;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- navbar starts -->
+<header>
+    <a href="/" class="logo"><i class="fab fa-node-js"></i> Design Byte</a>
+
+    <div id="menu" class="fas fa-bars"></div>
+    <nav class="navbar">
+        <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="about-us.html">About</a></li>
+        <li><a href="/experience">Experience</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/courses">Courses</a></li>
+        <li><a href="/contact-us.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+<!-- navbar ends -->
+
+<!-- login section starts -->
+<section class="login-page-section">
+    <div class="login-page-wrapper">
+        <div class="login-page-header">
+            <h1>Login</h1>
+            <p>Access your courses and profile</p>
+        </div>
+
+        <div class="login-page-card">
+            <form id="login-page-form">
+                <div class="login-page-form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="login-page-form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div id="login-page-error" class="login-page-error"></div>
+
+                <button type="submit" class="login-page-submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- login section ends -->
+
+<!-- footer section starts -->
+<section class="footer">
+    <div class="box-container">
+        <div class="box">
+            <h3>Shivam | Tutor & Guide</h3>
+            <p>Helping students master modern web and AI technologies through hands-on learning.<br/> <br/> Keep Rising 🚀. Upgrade your skills with guidance!</p>
+        </div>
+
+        <div class="box">
+            <h3>Quick Links</h3>
+            <a href="/"><i class="fas fa-chevron-circle-right"></i> Home</a>
+            <a href="about-us.html"><i class="fas fa-chevron-circle-right"></i> About Us</a>
+            <a href="cancellation-refunds.html"><i class="fas fa-chevron-circle-right"></i> Cancellation & Refunds</a>
+            <a href="terms-conditions.html"><i class="fas fa-chevron-circle-right"></i> Terms & Conditions</a>
+            <a href="privacy.html"><i class="fas fa-chevron-circle-right"></i> Privacy Policy</a>
+            <a href="contact-us.html"><i class="fas fa-chevron-circle-right"></i> Contact Us</a>
+        </div>
+
+        <div class="box">
+            <h3>Contact Info</h3>
+            <p> <i class="fas fa-phone"></i>+918709356155</p>
+            <p> <i class="fas fa-envelope"></i>shivam19e@gmail.com</p>
+            <p> <i class="fas fa-map-marked-alt"></i>Sohray, Pandaul, Madhubani, Bihar, India - 847234</p>
+            <div class="share">
+                <a href="https://www.linkedin.com/in/shivam-anand-41b10b34b/" class="fab fa-linkedin" aria-label="LinkedIn" target="_blank"></a>
+                <a href="https://github.com/shivam13669/" class="fab fa-github" aria-label="GitHub" target="_blank"></a>
+                <a href="mailto:shivam19e@gmail.com" class="fas fa-envelope" aria-label="Mail" target="_blank"></a>
+                <a class="fab fa-twitter" aria-label="Twitter"></a>
+                <a class="fab fa-telegram-plane" aria-label="Telegram"></a>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="credit">Designed with <i class="fa fa-heart pulse"></i> by <span class="author-name">Shivam</span></h1>
+</section>
+<!-- footer section ends -->
+
+<!-- scroll top btn -->
+<a href="#" aria-label="ScrollTop" class="fas fa-angle-up" id="scroll-top"></a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./assets/js/script.js"></script>
+<script src="./assets/js/login-page.js"></script>
+
+</body>
+</html>

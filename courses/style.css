@@ -1,0 +1,481 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  text-transform: capitalize;
+  transition: all 0.2s linear;
+}
+
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f7f7f7;
+  font-family: 'Poppins', sans-serif;
+}
+
+*::selection {
+  background: #2b3dda;
+  color: #fff;
+}
+
+html::-webkit-scrollbar {
+  width: 0.8rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: rgb(235, 202, 245);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #420177;
+}
+
+/* navbar starts */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.7rem 10%;
+  height: 6.5rem;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(146, 161, 176, 0.3);
+}
+
+header .logo {
+  font-size: 1.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: #0E2431;
+}
+
+header .logo i {
+  font-size: 2.2rem;
+}
+
+header .logo:hover {
+  color: #fc8c05;
+}
+
+header .navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header .navbar li {
+  margin-left: 2.5rem;
+}
+
+header .navbar ul li a {
+  font-size: 1.57rem;
+  color: #0E2431;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.04rem;
+}
+
+header .navbar ul li a.active,
+header .navbar ul li a:hover {
+  color: #011aff;
+  border-bottom: 0.2rem solid #011aff;
+  padding: 0.5rem 0;
+}
+
+/* navbar ends */
+
+/* hamburger icon starts */
+#menu {
+  font-size: 3rem;
+  cursor: pointer;
+  color: rgb(24, 2, 63);
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #menu {
+    display: block;
+  }
+
+  header .navbar {
+    position: fixed;
+    top: 6.5rem;
+    right: -120%;
+    width: 75%;
+    height: 100%;
+    text-align: left;
+    align-items: flex-start;
+    background-color: #0e0f31;
+  }
+
+  header .navbar ul {
+    flex-flow: column;
+    padding: 1rem;
+  }
+
+  header .navbar ul li {
+    text-align: center;
+    width: 100%;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    width: 26rem;
+  }
+
+  header .navbar ul li a {
+    display: block;
+    padding: 1rem;
+    text-align: left;
+    color: #fff;
+    font-size: 2rem;
+  }
+
+  header .navbar ul li a.active,
+  header .navbar ul li a:hover {
+    padding: 1rem;
+    color: #fff;
+    border-radius: 0.5rem;
+    border-bottom: 0.5rem solid #011aff;
+  }
+
+  .fa-times {
+    transform: rotate(180deg);
+  }
+
+  header .navbar.nav-toggle {
+    right: 0;
+  }
+}
+
+/* hamburger icon ends */
+
+/* courses section starts */
+.courses {
+  background: linear-gradient(to bottom, #f7f7f7, #f0f0f0);
+  margin-top: 6.5rem;
+  padding: 4rem 9% 2rem;
+  min-height: 100vh;
+}
+
+.courses-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.heading {
+  font-size: 3.5rem;
+  color: rgb(32, 32, 32);
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.heading span {
+  color: rgb(115, 3, 167);
+}
+
+.courses-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.courses-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin: 3rem 0;
+  padding: 0;
+}
+
+/* course card professional styling */
+.course-card {
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.course-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.15);
+}
+
+.course-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #001a4d, #0d0f31);
+}
+
+.course-card-content {
+  padding: 1.8rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card-content h3 {
+  font-size: 2rem;
+  color: #001a4d;
+  margin-bottom: 0.7rem;
+  line-height: 1.4;
+  font-weight: 800;
+  min-height: 2.6rem;
+}
+
+.course-card-instructor {
+  color: #ff6b35;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.course-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.course-card-stars {
+  color: #ffc107;
+  font-size: 1.1rem;
+}
+
+.course-card-reviews {
+  color: #888;
+  font-size: 1.15rem;
+}
+
+.course-card-description {
+  color: #666;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+  line-height: 1.6;
+}
+
+.course-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 0 0;
+  border-top: 1px solid #eee;
+  margin-top: auto;
+}
+
+.course-card-price {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ff6b35;
+  letter-spacing: -0.05rem;
+}
+
+.course-card-duration {
+  font-size: 1.2rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.course-card-btn {
+  background: linear-gradient(135deg, #2506ad 0%, #011aff 100%);
+  color: #fff;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 1.2rem;
+  width: 100%;
+  display: block;
+}
+
+.course-card-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1.2rem rgba(37, 6, 173, 0.3);
+}
+
+/* back to home button */
+.back-btn {
+  display: flex;
+  justify-content: center;
+  margin: 4rem 0 2rem;
+}
+
+.back-btn .btn {
+  position: relative;
+  line-height: 0;
+  padding: 1.6rem 3rem;
+  border-radius: 0.5em;
+  transition: 0.3s;
+  color: #fff;
+  border: 2px solid #011aff;
+  background: #011aff;
+  box-shadow: 0px 2px 4px rgba(48, 68, 247, 0.3);
+  text-align: center;
+}
+
+.back-btn .btn span {
+  font-weight: 600;
+  font-size: 1.7rem;
+  font-family: 'Nunito', sans-serif;
+}
+
+.back-btn .btn i {
+  margin-right: 0.5rem;
+  font-size: 1.5rem;
+  transition: 0.3s;
+}
+
+.back-btn .btn:hover {
+  background: #0d1b8e;
+  border-color: #0d1b8e;
+}
+
+.back-btn .btn:hover i {
+  transform: translateX(-8px);
+}
+
+/* scroll top starts */
+#scroll-top {
+  position: fixed;
+  top: -140%;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  font-size: 2rem;
+  background: #ff6b35;
+  color: #fff;
+  border-radius: 5rem;
+  transition: 1s linear;
+  z-index: 1000;
+}
+
+#scroll-top.active {
+  top: calc(100% - 12rem);
+}
+
+/* scroll top ends */
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .courses-container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 1.5rem 5%;
+  }
+
+  .courses {
+    padding: 2.5rem 5% 2rem;
+  }
+
+  .heading {
+    font-size: 2.5rem;
+  }
+
+  .courses-subtitle {
+    font-size: 1rem;
+  }
+
+  .courses-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .course-card-content {
+    padding: 1.5rem;
+  }
+
+  .course-card-content h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 450px) {
+  html {
+    font-size: 55%;
+  }
+
+  body {
+    padding-right: 0;
+  }
+
+  header {
+    padding: 1rem 5%;
+    height: 5.5rem;
+  }
+
+  header .navbar li {
+    margin-left: 1.5rem;
+  }
+
+  .courses {
+    padding: 2rem 5%;
+    margin-top: 5.5rem;
+  }
+
+  .heading {
+    font-size: 1.8rem;
+  }
+
+  .courses-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .courses-container {
+    gap: 1rem;
+  }
+
+  .course-card-content {
+    padding: 1.2rem;
+  }
+
+  .course-card-content h3 {
+    font-size: 1.1rem;
+    min-height: auto;
+  }
+
+  .course-card-price {
+    font-size: 1.2rem;
+  }
+
+  .back-btn .btn {
+    padding: 1.2rem 2rem;
+  }
+
+  .back-btn .btn span {
+    font-size: 1.3rem;
+  }
+
+  .back-btn .btn i {
+    font-size: 1.2rem;
+  }
+}

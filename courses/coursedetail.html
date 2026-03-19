@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/courses/detail-style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link id='favicon' rel="shortcut icon" href="https://cdn.builder.io/api/v1/image/assets%2F9fabf925f9b44231819b0bfba8d59dc0%2F6a7b9c70a34745d3a7bf25250d843f35?format=webp&width=800" type="image/x-png">
+    <title>Course Details | Design Byte</title>
+</head>
+<body>
+
+<!-- navbar starts -->
+<header>
+    <a href="/" class="logo"><i class="fab fa-node-js"></i> Design Byte</a>
+    <div id="menu" class="fas fa-bars"></div>
+    <nav class="navbar">
+        <ul>
+        <li><a href="/#home">Home</a></li>
+        <li><a href="/about-us.html">About</a></li>
+        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a class="active" href="/courses">Courses</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/login.html" class="login-link">Login</a></li>
+        </ul>
+    </nav>
+</header>
+<!-- navbar ends -->
+
+<!-- course hero section -->
+<section class="course-hero" id="courseHero">
+    <div class="hero-content">
+        <div class="hero-left">
+            <h1 id="courseTitle"></h1>
+            <p id="courseShortDesc" class="short-description"></p>
+            
+            <div class="course-meta">
+                <div class="meta-item">
+                    <i class="fas fa-star"></i>
+                    <span id="courseRating"></span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span id="courseReviews"></span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="courseDuration"></span>
+                </div>
+            </div>
+
+            <div class="instructor-info">
+                <p id="courseInstructor"></p>
+            </div>
+
+            <div class="course-actions">
+                <span class="course-price-amount" id="coursePrice"></span>
+                <button class="btn-buy-now" id="buyBtn">
+                    <i class="fas fa-shopping-cart"></i> Buy Now
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="course-image-wrapper">
+                <img id="courseImage" src="" alt="Course" class="course-hero-image">
+                <div class="price-badge" id="priceBadge"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- about course section -->
+<section class="about-course">
+    <div class="section-container">
+        <h2>About This Course</h2>
+        <p id="courseDescription"></p>
+    </div>
+</section>
+
+<!-- what you'll learn section -->
+<section class="learn-section">
+    <div class="section-container">
+        <h2>What You'll Learn</h2>
+        <ul id="learnList" class="learn-list">
+        </ul>
+    </div>
+</section>
+
+<!-- course curriculum section -->
+<section class="curriculum-section">
+    <div class="section-container">
+        <h2>Course Curriculum</h2>
+        <div id="curriculumList" class="curriculum-list">
+        </div>
+    </div>
+</section>
+
+<!-- requirements section -->
+<section class="requirements-section">
+    <div class="section-container">
+        <h2>Requirements</h2>
+        <ul id="requirementsList" class="requirements-list">
+        </ul>
+    </div>
+</section>
+
+<!-- cta section -->
+<section class="cta-section">
+    <div class="section-container">
+        <div class="cta-box">
+            <h2>Ready to Start Learning?</h2>
+            <p>Join thousands of students mastering web development</p>
+            <div class="cta-actions">
+                <button class="btn-buy-now-large" id="buyBtnLarge">
+                    Enroll Now
+                </button>
+                <a href="/courses" class="btn-back">Back to Courses</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- scroll top btn -->
+<a href="#courseHero" class="fas fa-angle-up" id="scroll-top"></a>
+
+<!-- ==== ALL MAJOR JAVASCRIPT CDNS STARTS ==== -->
+<!-- jquery cdn -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- scroll reveal anim -->
+<script src="https://unpkg.com/scrollreveal"></script>
+
+<!-- ==== ALL MAJOR JAVASCRIPT CDNS ENDS ==== -->
+
+<script src="/courses/detail-script.js"></script>
+
+</body>
+</html>

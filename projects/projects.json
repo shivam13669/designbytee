@@ -1,0 +1,69 @@
+[
+  {
+    "name": "StoriesByFoot",
+    "desc": "A visually immersive travel storytelling website",
+    "image": "storiesbyfoot",
+    "category": "javascript",
+    "links": {
+      "code": "https://github.com/shivam13669/webpage1mainfile/",
+      "view" : "https://storiesbyfoot.vercel.app/"
+    }
+  },
+  {
+    "name": "CRM Management",
+    "desc": "CRM Management for healthcare system.",
+    "image": "crm",
+    "category": "mernstack",
+    "links": {
+      "code": "https://github.com/shivam13669/CRMManagement10/",
+      "view" :""
+    }
+  },
+  {
+    "name": "Weather App",
+    "desc": "A dynamic Weather app",
+    "image": "weatherapp_new",
+    "category": "html",
+    "links": {
+      "code": "https://github.com/shivam13669/Weatherappmainfile/",
+      "view" :"https://mytrueweather.vercel.app/"
+    }
+  },
+
+  {
+    "name": "AI-chatcombo",
+    "desc": "AI-powered chatbot project using JavaScript.",
+    "image": "aichatcombo",
+    "category": "javascript",
+    "links": {
+      "code": "",
+      "view" : ""
+    }
+  },
+
+   {
+    "name": "SigmaGPT",
+    "desc": "Next-gen AI assistant with advanced reasoning capabilities.",
+    "image": "sigmagpt",
+    "category": "javascript",
+    "links": {
+      "code": "",
+       "view": ""
+
+    }
+  },
+
+
+  {
+    "name": "AI-Career-Coach",
+    "desc": "AI career guidance application built using JavaScript.",
+    "image": "aicareercoach",
+    "category": "javascript",
+    "links": {
+      "code": "",
+      "view" :""
+    }
+  }
+
+
+]

@@ -1,0 +1,33 @@
+{
+  "name": "payment-gateway-backend",
+  "version": "1.0.0",
+  "description": "Production-ready Node.js + Express backend for payment gateway integration",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "payment",
+    "razorpay",
+    "phonepe",
+    "cashfree",
+    "express",
+    "node"
+  ],
+  "author": "Shivam Anand",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2",
+    "razorpay": "^2.9.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

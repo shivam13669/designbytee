@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Design Byte</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/checkout-style.css">
+    <link id='favicon' rel="shortcut icon" href="https://cdn.builder.io/api/v1/image/assets%2F9fabf925f9b44231819b0bfba8d59dc0%2F6a7b9c70a34745d3a7bf25250d843f35?format=webp&width=800" type="image/x-png">
+</head>
+
+<body>
+
+<div class="checkout-wrapper">
+    <div class="checkout">
+        <!-- LEFT SECTION -->
+        <div class="checkout-left">
+            <h2>Checkout</h2>
+
+            <form id="checkoutForm" novalidate>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="customerName" name="name" placeholder="Enter your name" required>
+                    <span class="form-error" id="nameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="customerEmail" name="email" placeholder="Enter your email" required>
+                    <span class="form-error" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="customerPhone" name="phone" placeholder="Enter your phone" maxlength="10" required>
+                    <span class="form-error" id="phoneError"></span>
+                </div>
+
+                <div class="section">
+                    <label>Select Payment Method</label>
+                    <span class="form-error" id="gatewayError"></span>
+                    <div class="methods">
+                        <div class="method" data-pay="razorpay" data-gateway="razorpay">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2F54f73cbdda5d4fe2a9f22d6014626e18%2F1cbc1f23d71a40f9b35a1ebedb0f99ee?format=webp&width=800&height=1200" alt="Razorpay">
+                            </div>
+                        </div>
+                        <div class="method" data-pay="phonepe" data-gateway="phonepe">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2F54f73cbdda5d4fe2a9f22d6014626e18%2F7e99265aac174b67b3b925208ca4937b?format=webp&width=800&height=1200" alt="PhonePe">
+                            </div>
+                        </div>
+                        <div class="method" data-pay="cashfree" data-gateway="cashfree">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2Fa8305d2e4e7542a5ba3e92e7f3385d81%2F2150e92314a74762ba8bb36c694ac724?format=webp&width=800&height=1200" alt="Cashfree">
+                            </div>
+                        </div>
+                        <div class="method" data-pay="sabpaisa" data-gateway="sabpaisa">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2Ff5e51b22b4ee4e43b175dcc703c884f4%2F1624d87724fe4da3986a9e7ebcf75867?format=webp&width=800&height=1200" alt="SabPaisa">
+                            </div>
+                        </div>
+                        <div class="method" data-pay="instamojo" data-gateway="instamojo">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2Ff5e51b22b4ee4e43b175dcc703c884f4%2F6dd3c64f1ba341898196347aabb0c83d?format=webp&width=800&height=1200" alt="Instamojo">
+                            </div>
+                        </div>
+                        <div class="method" data-pay="easebuzz" data-gateway="easebuzz">
+                            <div class="logo-box">
+                                <img src="https://cdn.builder.io/api/v1/image/assets%2Fc0e019b1de6b43329f1da4dafcc9030c%2Fbcf5d38da6bc4410b32ee2dc725a81eb?format=webp&width=800&height=1200" alt="Easebuzz">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="pay-btn" id="payNowBtn"><i class="fas fa-lock"></i> Pay</button>
+            </form>
+        </div>
+
+        <!-- RIGHT SECTION -->
+        <div class="checkout-right">
+            <h3>Order Summary</h3>
+
+            <div class="course-summary">
+                <img id="courseSummaryImage" src="" alt="Course">
+                <div class="course-info">
+                    <h4 id="courseSummaryName"></h4>
+                    <div class="author" id="courseSummaryInstructor"></div>
+                    <div class="duration" id="courseSummaryDuration"></div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="price-section">
+                <div class="total">
+                    <span>Total Amount</span>
+                    <span id="summaryTotal"></span>
+                </div>
+            </div>
+
+            <div class="secure">
+                🔒 Secure checkout • Encrypted payments
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Status Modal -->
+<div class="payment-status-overlay" id="paymentStatusOverlay">
+    <div class="payment-status-modal">
+        <div id="statusContent">
+            <!-- Content will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Cashfree SDK -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+<script src="/assets/js/checkout-script.js"></script>
+
+</body>
+</html>

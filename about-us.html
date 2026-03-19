@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Shivam Anand, portfolio, Shivam, full stack dev, personal portfolio lifecodes, portfolio design, portfolio website, personal portfolio" />
+    <meta name="description" content="About Us - Shivam's Portfolio" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Favicon -->
+    <link id='favicon' rel="shortcut icon" href="https://cdn.builder.io/api/v1/image/assets%2F9fabf925f9b44231819b0bfba8d59dc0%2F6a7b9c70a34745d3a7bf25250d843f35?format=webp&width=800" type="image/x-png">
+    <title>About Us | Design Byte</title>
+    <style>
+        .about-section {
+            background: linear-gradient(135deg, #e5ecfb 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            padding: 3rem 9% 2rem 9%;
+            margin-top: 6.5rem;
+        }
+        .about-wrapper {
+            max-width: 1050px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .about-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+            animation: slideDown 0.8s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .about-header h1 {
+            font-size: 3.5rem;
+            color: #020133;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #011aff, #020133);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .about-header p {
+            font-size: 1.5rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .about-content {
+            background: #fff;
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .section-divider {
+            height: 3px;
+            width: 60px;
+            background: linear-gradient(90deg, #011aff, #020133);
+            margin: 2rem auto;
+            border-radius: 2px;
+        }
+        .about-content h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #011aff, #020133);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #011aff, transparent);
+            border-radius: 2px;
+        }
+        .about-content h3 {
+            font-size: 1.8rem;
+            color: #020133;
+            margin-top: 2.5rem;
+            margin-bottom: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .about-content h3 i {
+            color: #011aff;
+            font-size: 1.6rem;
+        }
+        .about-content p {
+            font-size: 1.5rem;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+        .about-content ul {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .about-content li {
+            font-size: 1.5rem;
+            color: #555;
+            line-height: 1.9;
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        .about-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #011aff;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .highlight {
+            color: #011aff;
+            font-weight: 700;
+        }
+        .intro-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e5ecfb 100%);
+            border-left: 4px solid #011aff;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f9f9f9 0%, #f0f4ff 100%);
+            border-radius: 1.2rem;
+            border: 2px solid #e5ecfb;
+            border-left: 4px solid #011aff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(1, 26, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .stat-box:hover::before {
+            left: 100%;
+        }
+        .stat-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(1, 26, 255, 0.15);
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #011aff, #020133);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            font-size: 1.3rem;
+            color: #020133;
+            font-weight: 600;
+        }
+        .values-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        .value-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            border: 2px solid #e5ecfb;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(1, 26, 255, 0.1) 0%, transparent 70%);
+            transition: all 0.3s ease;
+        }
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(1, 26, 255, 0.2);
+            border-color: #011aff;
+        }
+        .value-card:hover::before {
+            top: -20%;
+            right: -20%;
+        }
+        .value-card i {
+            font-size: 3.5rem;
+            color: #011aff;
+            margin-bottom: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .value-card:hover i {
+            transform: scale(1.15) rotate(5deg);
+        }
+        .value-card h4 {
+            font-size: 1.6rem;
+            color: #020133;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+        .value-card p {
+            font-size: 1.4rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .contact-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .contact-item {
+            background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border-left: 4px solid #011aff;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        .contact-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 10px 25px rgba(1, 26, 255, 0.15);
+        }
+        .contact-item i {
+            font-size: 2rem;
+            color: #011aff;
+            min-width: 50px;
+            text-align: center;
+        }
+        .contact-item-content h4 {
+            font-size: 1.2rem;
+            color: #020133;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+        .contact-item-content p {
+            font-size: 1.4rem;
+            color: #666;
+            margin: 0;
+        }
+        .contact-item-content a {
+            color: #011aff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .contact-item-content a:hover {
+            text-decoration: underline;
+            color: #020133;
+        }
+        .journey-timeline {
+            position: relative;
+            margin: 3rem 0;
+            padding: 2rem 0;
+        }
+        .journey-item {
+            margin-bottom: 2rem;
+            padding-left: 3rem;
+            position: relative;
+        }
+        .journey-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: #011aff;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px #011aff;
+        }
+        .journey-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 12px;
+            width: 2px;
+            height: 40px;
+            background: #e5ecfb;
+        }
+        .journey-item:last-child::after {
+            display: none;
+        }
+        .journey-text {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            border-left: 3px solid #011aff;
+        }
+        .journey-text p {
+            margin: 0;
+            color: #555;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #011aff, #020133);
+            color: #fff;
+            padding: 3rem;
+            border-radius: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .cta-section h3 {
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .cta-section p {
+            color: #e0e6ff;
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #fff;
+            color: #011aff;
+            padding: 1.2rem 2.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+        @media (max-width: 900px) {
+            .about-section {
+                min-height: auto;
+                padding: 2rem;
+                margin-top: 6.5rem;
+            }
+            .about-header h1 {
+                font-size: 2.5rem;
+            }
+            .about-header p {
+                font-size: 1.3rem;
+            }
+            .about-content {
+                padding: 2rem;
+            }
+            .about-content h2 {
+                font-size: 2rem;
+            }
+            .about-content h3 {
+                font-size: 1.5rem;
+            }
+            .about-content p,
+            .about-content li {
+                font-size: 1.3rem;
+            }
+            .stat-number {
+                font-size: 2rem;
+            }
+            .value-card i {
+                font-size: 2.8rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .about-section {
+                padding: 1.5rem;
+            }
+            .about-header h1 {
+                font-size: 2rem;
+            }
+            .about-header p {
+                font-size: 1.2rem;
+            }
+            .about-content {
+                padding: 1.5rem;
+                border-radius: 1.2rem;
+            }
+            .about-content h2 {
+                font-size: 1.6rem;
+            }
+            .about-content h3 {
+                font-size: 1.3rem;
+                gap: 0.5rem;
+            }
+            .about-content p,
+            .about-content li {
+                font-size: 1.2rem;
+            }
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .values-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .stat-box {
+                padding: 1.5rem;
+            }
+            .value-card {
+                padding: 1.8rem;
+            }
+            .intro-card {
+                padding: 1.5rem;
+            }
+            .contact-links {
+                grid-template-columns: 1fr;
+            }
+            .cta-section {
+                padding: 2rem;
+            }
+            .cta-section h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- navbar starts -->
+<header>
+    <a href="/" class="logo"><i class="fab fa-node-js"></i> Design Byte</a>
+
+    <div id="menu" class="fas fa-bars"></div>
+    <nav class="navbar">
+        <ul>
+        <li><a href="/">Home</a></li>
+        <li><a class="active" href="about-us.html">About</a></li>
+        <li><a href="/experience">Experience</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/courses">Courses</a></li>
+        <li><a href="/contact-us.html">Contact</a></li>
+        <li><a href="login.html" class="login-link">Login</a></li>
+        </ul>
+    </nav>
+</header>
+<!-- navbar ends -->
+
+<!-- about section starts -->
+<section class="about-section">
+    <div class="about-wrapper">
+        <div class="about-header">
+            <h1>About Me</h1>
+            <p>An experienced tutor and course instructor dedicated to empowering students through quality education. Let me share my journey, teaching philosophy, and vision for your success.</p>
+        </div>
+
+        <div class="about-content">
+            <h2><i class="fas fa-user-circle"></i> Who Am I?</h2>
+            
+            <div class="intro-card">
+                <p>I'm Mr. <span class="highlight">Shivam Anand</span>, an individual tutor and course instructor from Madhubani, Bihar, India. With extensive expertise in Full Stack Development, web technologies, and AI integration, I'm dedicated to providing high-quality guidance and learning experiences to students at all levels.</p>
+
+                <p>I specialize in creating comprehensive, personalized courses that combine theoretical knowledge with practical, hands-on learning. Through my mentoring and tutoring services, I help students master modern web development technologies, develop problem-solving skills, and prepare for successful careers in the tech industry.</p>
+            </div>
+
+            <h3><i class="fas fa-road"></i> My Journey</h3>
+            <p>My journey began with a passion for learning technology and a desire to help others do the same. After gaining extensive experience as a Full Stack Developer through internships and freelance projects, I realized my true calling was in teaching and mentoring. Now, I leverage my hands-on technical expertise to guide students through their learning journey in web development and AI integration.</p>
+
+            <p>Through my tutoring and courses, I help students understand complex concepts, build real-world projects, and develop the skills needed for successful careers in technology. I believe that quality education and personalized guidance can transform careers and open new opportunities.</p>
+
+            <h3><i class="fas fa-code"></i> What I Do</h3>
+            <p>As an individual tutor, I provide comprehensive guidance and educational services across multiple domains:</p>
+            <ul>
+                <li><strong>Personalized Tutoring:</strong> One-on-one guidance tailored to each student's learning pace and goals</li>
+                <li><strong>Full Stack Development Courses:</strong> Comprehensive training in frontend, backend, and full-stack web development with hands-on projects</li>
+                <li><strong>AI Integration Training:</strong> Teaching modern AI techniques and their application in web development</li>
+                <li><strong>Course Development & Instruction:</strong> Creating and delivering structured online courses with practical assignments</li>
+                <li><strong>Career Mentoring:</strong> Guiding students through their professional journey and preparing them for tech industry roles</li>
+                <li><strong>Practical Projects:</strong> Working with students on real-world projects to build portfolio and experience</li>
+            </ul>
+
+            <h3><i class="fas fa-heart"></i> Core Values</h3>
+            <div class="values-container">
+                <div class="value-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>Innovation</h4>
+                    <p>Constantly exploring new ideas and technologies to deliver cutting-edge solutions</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-handshake"></i>
+                    <h4>Collaboration</h4>
+                    <p>Working effectively with teams and stakeholders to achieve common goals</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h4>Continuous Learning</h4>
+                    <p>Committed to continuous improvement and staying ahead in technology</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Quality Focus</h4>
+                    <p>Delivering high-quality code and solutions that stand the test of time</p>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-briefcase"></i> Professional Highlights</h3>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Projects Completed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">3+</div>
+                    <div class="stat-label">Years in Development</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+
+            <h3><i class="fas fa-handshake"></i> Let's Connect</h3>
+            <p>I'm always excited to discuss new projects, ideas, or opportunities to collaborate. Whether you have a project in mind or just want to chat about technology, feel free to reach out!</p>
+            
+            <div class="contact-links">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="contact-item-content">
+                        <h4>Email</h4>
+                        <p><a href="mailto:shivam19e@gmail.com">shivam19e@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="contact-item-content">
+                        <h4>Phone</h4>
+                        <p><a href="tel:+918709356155">+91 8709356155</a></p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-linkedin"></i>
+                    <div class="contact-item-content">
+                        <h4>LinkedIn</h4>
+                        <p><a href="https://www.linkedin.com/in/shivam-anand-41b10b34b/" target="_blank">Connect with me</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h3>Ready to Work Together?</h3>
+                <p>Let's create something amazing together. Reach out to discuss your project ideas.</p>
+                <a href="/#contact" class="cta-button">Get In Touch</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- about section ends -->
+
+<!-- footer section starts -->
+<section class="footer">
+    <div class="box-container">
+        <div class="box">
+            <h3>Shivam | Tutor & Guide</h3>
+            <p>Helping students master modern web and AI technologies through hands-on learning.<br/> <br/> Keep Rising 🚀. Upgrade your skills with guidance!</p>
+        </div>
+
+        <div class="box">
+            <h3>Quick Links</h3>
+            <a href="/"><i class="fas fa-chevron-circle-right"></i> Home</a>
+            <a href="about-us.html"><i class="fas fa-chevron-circle-right"></i> About Us</a>
+            <a href="cancellation-refunds.html"><i class="fas fa-chevron-circle-right"></i> Cancellation & Refunds</a>
+            <a href="terms-conditions.html"><i class="fas fa-chevron-circle-right"></i> Terms & Conditions</a>
+            <a href="privacy.html"><i class="fas fa-chevron-circle-right"></i> Privacy Policy</a>
+            <a href="contact-us.html"><i class="fas fa-chevron-circle-right"></i> Contact Us</a>
+        </div>
+
+        <div class="box">
+            <h3>Contact Info</h3>
+            <p> <i class="fas fa-phone"></i>+918709356155</p>
+            <p> <i class="fas fa-envelope"></i>shivam19e@gmail.com</p>
+            <p> <i class="fas fa-map-marked-alt"></i>Sohray, Pandaul, Madhubani, Bihar, India - 847234</p>
+            <div class="share">
+                <a href="https://www.linkedin.com/in/shivam-anand-41b10b34b/" class="fab fa-linkedin" aria-label="LinkedIn" target="_blank"></a>
+                <a href="https://github.com/shivam13669/" class="fab fa-github" aria-label="GitHub" target="_blank"></a>
+                <a href="mailto:shivam19e@gmail.com" class="fas fa-envelope" aria-label="Mail" target="_blank"></a>
+                <a class="fab fa-twitter" aria-label="Twitter"></a>
+                <a class="fab fa-telegram-plane" aria-label="Telegram"></a>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="credit">Designed with <i class="fa fa-heart pulse"></i> by <span class="author-name">Shivam</span></h1>
+</section>
+<!-- footer section ends -->
+
+<!-- scroll top btn -->
+<a href="#" aria-label="ScrollTop" class="fas fa-angle-up" id="scroll-top"></a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="./assets/js/script.js"></script>
+
+</body>
+</html>
