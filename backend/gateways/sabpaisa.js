@@ -82,8 +82,8 @@ const stringForRequest =
   "&clientCode=" + SABPAISA_CLIENT_CODE +
   "&transUserName=" + SABPAISA_USERNAME +
   "&transUserPassword=" + SABPAISA_PASSWORD +
-  "&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
   "&channelId=W" +
+  "&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
   "&mcc=5666" +
   "&transDate=" + transDate;
 
