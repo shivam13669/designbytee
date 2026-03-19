@@ -23,21 +23,25 @@ const SABPAISA_URL =
    ENCRYPT FUNCTION
 ===================================================== */
 
-function encryptSabPaisa(text) {
+function encrypt(plaintext) {
+  const aesKey = Buffer.from(AES_KEY_BASE64, "base64");
+  const hmacKey = Buffer.from(HMAC_KEY_BASE64, "base64");
 
-  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64").slice(0,16);
-  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64").slice(0,16);
+  const iv = crypto.randomBytes(IV_SIZE);
 
-  const cipher = crypto.createCipheriv(
-    "aes-128-cbc",
-    key,
-    iv
-  );
+  const cipher = crypto.createCipheriv("aes-256-gcm", aesKey, iv, { authTagLength: TAG_SIZE });
+  let encrypted = cipher.update(Buffer.from(plaintext, "utf8"));
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
 
-  let encrypted = cipher.update(text, "utf8", "base64");
-  encrypted += cipher.final("base64");
+  const tag = cipher.getAuthTag();
 
-  return encrypted;
+  const encryptedMessage = Buffer.concat([iv, encrypted, tag]);
+
+  const hmac = crypto.createHmac("sha384", hmacKey).update(encryptedMessage).digest();
+
+  const finalMessage = Buffer.concat([hmac, encryptedMessage]);
+
+  return bufferToHex(finalMessage);
 }
 
 /* =====================================================
