@@ -25,14 +25,10 @@ const SABPAISA_URL =
 
 function encryptSabPaisa(text) {
 
-  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64").subarray(0, 32);
-  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64").subarray(0, 16);
+  const key = Buffer.from(process.env.SABPAISA_AUTH_KEY, "base64").slice(0,32);
+  const iv = Buffer.from(process.env.SABPAISA_AUTH_IV, "base64").slice(0,16);
 
-  const cipher = crypto.createCipheriv(
-    "aes-256-cbc",
-    key,
-    iv
-  );
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
 
   let encrypted = cipher.update(text, "utf8", "base64");
   encrypted += cipher.final("base64");
@@ -71,21 +67,21 @@ export const createSabPaisaOrder = async ({
     const txnId = `TXN_${Date.now()}`;
 
 
-const transDate = new Date().toISOString();
+const transDate = new Date().toISOString().slice(0,19).replace("T"," ");
 
 const stringForRequest =
-  "payerName=" + customer.name +
-  "&payerEmail=" + customer.email +
-  "&payerMobile=" + customer.phone +
-  "&clientTxnId=" + txnId +
-  "&amount=" + parseInt(amount) +
-  "&clientCode=" + SABPAISA_CLIENT_CODE +
-  "&transUserName=" + SABPAISA_USERNAME +
-  "&transUserPassword=" + SABPAISA_PASSWORD +
-  "&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
-  "&channelId=W" +
-  "&mcc=5666" +
-  "&transDate=" + transDate;
+"payerName=" + customer.name +
+"&payerEmail=" + customer.email +
+"&payerMobile=" + customer.phone +
+"&clientTxnId=" + txnId +
+"&amount=" + parseInt(amount) +
+"&clientCode=" + SABPAISA_CLIENT_CODE +
+"&transUserName=" + SABPAISA_USERNAME +
+"&transUserPassword=" + SABPAISA_PASSWORD +
+"&callbackUrl=" + process.env.BACKEND_URL + "/api/payment/sabpaisa-callback" +
+"&channelId=W" +
+"&mcc=5499" +
+"&transDate=" + transDate;
 
 
 console.log("STRING =", stringForRequest);
